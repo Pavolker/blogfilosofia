@@ -122,6 +122,7 @@ async function initializeApp() {
     await bootstrapPosts();
     setupLogin();
     setupPublisherAccess();
+    ensureReaderIdentity();
     await renderPosts();
     updateUserInfo();
 }
@@ -557,10 +558,7 @@ async function renderPosts() {
 
         form.addEventListener('submit', async (event) => {
             event.preventDefault();
-            if (!currentUser) {
-                alert('Faça login para participar.');
-                return;
-            }
+            ensureReaderIdentity();
             const message = textarea.value.trim();
             if (!message) {
                 textarea.focus();
@@ -706,19 +704,13 @@ function loadLikedUsers(postId) {
 
 function toggleLikeState(button, postId) {
     if (!button) return;
-    if (!currentUser) {
-        button.classList.remove('liked');
-        return;
-    }
+    ensureReaderIdentity();
     const likedUsers = loadLikedUsers(postId);
     button.classList.toggle('liked', likedUsers.includes(currentUser));
 }
 
 function handleLike(postId, button, counter) {
-    if (!currentUser) {
-        alert('Faça login para curtir publicações.');
-        return;
-    }
+    ensureReaderIdentity();
     const likedUsers = new Set(loadLikedUsers(postId));
     let likes = loadLikes(postId);
 
@@ -916,9 +908,11 @@ function createReplyActions({ entry, post, nextDepth, container, rootList }) {
 }
 
 function openReplyForm({ post, parentEntry, host, responder, nextDepth, rootList }) {
-    if (responder.role === 'reader' && (!currentUser || currentUser !== responder.name)) {
-        alert('Faça login para responder.');
-        return;
+    if (responder.role === 'reader') {
+        ensureReaderIdentity();
+        if (currentUser !== responder.name) {
+            return;
+        }
     }
     if (responder.role === 'author' && (!currentPublisher || currentPublisher.name !== responder.name)) {
         return;
@@ -1028,6 +1022,24 @@ function updateUserInfo() {
     if (!target) return;
     // Não exibir referências; manter conteúdo estático do header (botão Administração)
     return;
+}
+
+function ensureReaderIdentity() {
+    if (currentUser && typeof currentUser === 'string') return currentUser;
+    try {
+        const stored = localStorage.getItem(STORAGE_KEYS.user);
+        if (stored && typeof stored === 'string') {
+            currentUser = stored;
+            return currentUser;
+        }
+        const rnd = Math.random().toString(36).slice(2, 6);
+        currentUser = `Visitante-${rnd}`;
+        localStorage.setItem(STORAGE_KEYS.user, currentUser);
+        return currentUser;
+    } catch (_) {
+        currentUser = 'Visitante';
+        return currentUser;
+    }
 }
 
 function generateId() {
