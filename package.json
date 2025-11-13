@@ -5,7 +5,7 @@
   "main": "index.html",
   "scripts": {
     "start": "python3 -m http.server 8000",
-    "build": "echo 'Site estático - nenhuma build necessária'",
+    "build": "node generate-config.js",
     "test": "echo 'Sem testes definidos'"
   },
   "keywords": ["blog", "filosofia", "colaborativo", "supabase"],

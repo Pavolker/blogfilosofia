@@ -1,6 +1,6 @@
 [build]
   publish = "."
-  command = "echo 'Site estático pronto para deploy'"
+  command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
