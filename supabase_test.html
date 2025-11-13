@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Conexão Supabase</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        button {
+            background-color: #0d5c63;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #084c52;
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Teste de Conexão Supabase</h1>
+        <p>Esta página testa a conexão com o seu projeto Supabase.</p>
+        
+        <div id="statusArea"></div>
+        
+        <button id="testConnectionBtn">Testar Conexão</button>
+        <button id="testPostsBtn" disabled>Testar Leitura de Posts</button>
+    </div>
+
+    <!-- Supabase JavaScript Library -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Configuration file -->
+    <script src="config.js"></script>
+    
+    <script>
+        // Elements
+        const statusArea = document.getElementById('statusArea');
+        const testConnectionBtn = document.getElementById('testConnectionBtn');
+        const testPostsBtn = document.getElementById('testPostsBtn');
+        
+        let supabaseClient = null;
+        
+        // Function to add status message
+        function addStatus(message, type = 'info') {
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `status ${type}`;
+            statusDiv.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            statusArea.appendChild(statusDiv);
+            
+            // Scroll to bottom
+            statusArea.scrollTop = statusArea.scrollHeight;
+        }
+        
+        // Function to test Supabase connection
+        async function testSupabaseConnection() {
+            try {
+                // Check if config values exist
+                if (!window.APP_CONFIG || !window.APP_CONFIG.supabaseUrl || !window.APP_CONFIG.supabaseAnonKey) {
+                    addStatus('Erro: Configuração do Supabase não encontrada. Verifique o arquivo config.js.', 'error');
+                    return false;
+                }
+                
+                // Create Supabase client
+                supabaseClient = window.supabase.createClient(
+                    window.APP_CONFIG.supabaseUrl, 
+                    window.APP_CONFIG.supabaseAnonKey
+                );
+                
+                addStatus('Cliente Supabase criado com sucesso!', 'success');
+                
+                // Test the connection by attempting to query a table
+                const { data, error } = await supabaseClient
+                    .from('posts')
+                    .select('id, title')
+                    .limit(1);
+                
+                if (error) {
+                    addStatus(`Erro ao acessar o banco de dados: ${error.message}`, 'error');
+                    return false;
+                }
+                
+                addStatus('Conexão com o banco de dados bem-sucedida! Tabela "posts" acessível.', 'success');
+                testPostsBtn.disabled = false;
+                return true;
+            } catch (err) {
+                addStatus(`Erro ao conectar com Supabase: ${err.message}`, 'error');
+                return false;
+            }
+        }
+        
+        // Function to test reading posts
+        async function testReadingPosts() {
+            if (!supabaseClient) {
+                addStatus('Cliente Supabase não está inicializado. Conecte-se primeiro.', 'error');
+                return;
+            }
+            
+            try {
+                const { data, error } = await supabaseClient
+                    .from('posts')
+                    .select('*')
+                    .order('createdAt', { ascending: false })
+                    .limit(5);
+                
+                if (error) {
+                    addStatus(`Erro ao ler posts: ${error.message}`, 'error');
+                    return;
+                }
+                
+                if (data) {
+                    addStatus(`Posts lidos com sucesso. Total: ${data.length}`, 'success');
+                    if (data.length > 0) {
+                        addStatus(`Primeiro post: "${data[0].title}" por ${data[0].author}`, 'info');
+                    } else {
+                        addStatus('Nenhum post encontrado na tabela. A tabela pode estar vazia ou o schema pode não estar configurado corretamente.', 'info');
+                    }
+                } else {
+                    addStatus('Nenhum dado retornado da consulta.', 'info');
+                }
+            } catch (err) {
+                addStatus(`Erro ao ler posts: ${err.message}`, 'error');
+            }
+        }
+        
+        // Event listeners
+        testConnectionBtn.addEventListener('click', async () => {
+            testConnectionBtn.disabled = true;
+            testConnectionBtn.textContent = 'Testando...';
+            addStatus('Iniciando teste de conexão com Supabase...');
+            
+            const success = await testSupabaseConnection();
+            
+            testConnectionBtn.textContent = 'Testar Conexão';
+            testConnectionBtn.disabled = false;
+            
+            if (success) {
+                addStatus('Teste de conexão concluído com sucesso!', 'success');
+            } else {
+                addStatus('Teste de conexão falhou. Verifique sua configuração.', 'error');
+            }
+        });
+        
+        testPostsBtn.addEventListener('click', async () => {
+            addStatus('Testando leitura de posts...');
+            await testReadingPosts();
+        });
+        
+        // Check if Supabase library loaded
+        if (!window.supabase) {
+            addStatus('Erro: A biblioteca Supabase não foi carregada corretamente.', 'error');
+            testConnectionBtn.disabled = true;
+        } else {
+            addStatus('Biblioteca Supabase carregada com sucesso. Pronto para testar a conexão.', 'info');
+        }
+    </script>
+</body>
+</html>

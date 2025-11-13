@@ -16,31 +16,42 @@ const AUTHOR_STYLES = {
     Paulo: {
         gradient: 'linear-gradient(135deg, #0A2A2F, #11646B)',
     },
+    Angelica: {
+        gradient: 'linear-gradient(135deg, #7A1FA2, #F06292)',
+    },
 };
 
 const AUTHOR_PHOTOS = {
     Patricia: 'patricia.png',
     Higino: 'higino.png',
     Paulo: 'paulo.png',
+    Angelica: 'angelica.jpg',
 };
 
 const AUTHOR_RHYTHMS = {
     Patricia: 'Ritmo leve cultivado por Patricia',
     Higino: 'Pulso vibrante conduzido por Higino',
     Paulo: 'Cadência contemplativa guiada por Paulo',
+    Angelica: 'Fluxo intuitivo conduzido por Angelica',
 };
 
-const PUBLISHER_CREDENTIALS = {
-    PATRICIA: 'patricia',
-    HIGINO: 'higino',
-    PAULO: 'paulo',
+// Por segurança e simplicidade: os publicadores padrão são APENAS Paulo e Angelica.
+// Se quiser adicionar outros publicadores, configure o objeto `publisherAccounts` em `config.js`.
+const DEFAULT_PUBLISHERS = {
+    PAULO: {
+        email: 'paulo@example.com',
+        displayName: 'Paulo',
+    },
+    ANGELICA: {
+        email: 'angelica@example.com',
+        displayName: 'Angelica',
+    },
 };
 
-const PUBLISHER_DISPLAY = {
-    PATRICIA: 'Patricia',
-    HIGINO: 'Higino',
-    PAULO: 'Paulo',
-};
+let PUBLISHER_ACCOUNTS = normalizePublisherAccounts(
+    DEFAULT_PUBLISHERS,
+    window.APP_CONFIG?.publisherAccounts
+);
 
 const seedPosts = [
     {
@@ -81,6 +92,7 @@ const seedPosts = [
 let currentUser = null;
 let currentPublisher = null;
 let activeReplyForm = null;
+let authSession = null;
 // Ocultar todas as publicações apenas na UI (não afeta Supabase)
 let hideAllPostsOnPage = false;
 // Ocultar publicações específicas apenas na UI (não afeta Supabase)
@@ -116,20 +128,143 @@ function getSupabaseClient() {
     return supabaseClient;
 }
 
+async function initializeAuth() {
+    const client = getSupabaseClient();
+    if (!client) return;
+    try {
+        const { data, error } = await client.auth.getSession();
+        if (error) throw error;
+        if (!data.session) {
+            await ensureAnonymousSession(client);
+        } else {
+            handleSessionChange(data.session);
+        }
+        client.auth.onAuthStateChange((_event, session) => {
+            handleSessionChange(session);
+            if (!session) {
+                ensureAnonymousSession(client);
+            }
+        });
+    } catch (err) {
+        console.warn('Falha ao inicializar autenticação do Supabase.', err);
+    }
+}
+
+async function ensureAnonymousSession(client = getSupabaseClient()) {
+    if (!client) return null;
+    try {
+        const existing = await client.auth.getSession();
+        if (existing?.data?.session) {
+            handleSessionChange(existing.data.session);
+            return existing.data.session;
+        }
+        const { data, error } = await client.auth.signInAnonymously();
+        if (error) throw error;
+        handleSessionChange(data.session);
+        return data.session;
+    } catch (err) {
+        console.warn('Não foi possível iniciar sessão anônima no Supabase.', err);
+        return null;
+    }
+}
+
+function handleSessionChange(session) {
+    authSession = session ?? null;
+    if (!session || !session.user) {
+        currentPublisher = null;
+        return;
+    }
+    const provider = session.user.app_metadata?.provider;
+    if (provider === 'anonymous') {
+        currentPublisher = null;
+        return;
+    }
+    currentPublisher = derivePublisherFromSession(session.user);
+}
+
+function derivePublisherFromSession(user) {
+    if (!user) return null;
+    const normalizedEmail = (user.email || '').toLowerCase();
+    const matchedKey = Object.keys(PUBLISHER_ACCOUNTS).find((key) => {
+        const email = PUBLISHER_ACCOUNTS[key]?.email;
+        return email && email.toLowerCase() === normalizedEmail;
+    }) || null;
+    const profile = matchedKey ? PUBLISHER_ACCOUNTS[matchedKey] : null;
+    const metadata = user.user_metadata || {};
+    const displayName = profile?.displayName
+        || metadata.display_name
+        || metadata.author
+        || metadata.name
+        || capitalize(wordLower(user.email?.split('@')[0] || 'Publicador'));
+    return {
+        key: matchedKey,
+        name: displayName,
+        email: user.email,
+        userId: user.id,
+    };
+}
+
+function isAnonymousSession(session = authSession) {
+    if (!session || !session.user) return true;
+    return session.user.app_metadata?.provider === 'anonymous';
+}
+
+function getLikeFingerprint() {
+    if (authSession?.user?.id) {
+        return authSession.user.id;
+    }
+    ensureReaderIdentity();
+    return currentUser;
+}
+
 window.addEventListener('DOMContentLoaded', initializeApp);
 
 async function initializeApp() {
+    // Atualizar PUBLISHER_ACCOUNTS com valores do config.js
+    PUBLISHER_ACCOUNTS = normalizePublisherAccounts(
+        DEFAULT_PUBLISHERS,
+        window.APP_CONFIG?.publisherAccounts
+    );
+    await initializeAuth();
     await bootstrapPosts();
     setupLogin();
     setupPublisherAccess();
+    setupSidebarToggle();
     ensureReaderIdentity();
     await renderPosts();
     updateUserInfo();
 }
 
+function setupSidebarToggle() {
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebarToggleIcon = document.getElementById('sidebarToggleIcon');
+    const sidebarToggleLabel = document.getElementById('sidebarToggleLabel');
+    
+    if (!sidebarToggle) return;
+    
+    
+    sidebarToggle.addEventListener('click', function() {
+        const isCollapsed = document.body.classList.toggle('sidebar-collapsed');
+        
+        // Alternar ícone
+        if (sidebarToggleIcon) {
+            sidebarToggleIcon.textContent = isCollapsed ? 'close' : 'menu';
+        }
+        
+        // Alternar texto do label
+        if (sidebarToggleLabel) {
+            sidebarToggleLabel.textContent = isCollapsed ? 'Fechar menu' : 'Abrir menu';
+        }
+        
+        // Alternar atributos ARIA
+        sidebarToggle.setAttribute('aria-expanded', !isCollapsed);
+        sidebarToggle.setAttribute('aria-label', isCollapsed ? 'Fechar menu lateral' : 'Abrir menu lateral');
+    });
+}
+
 async function bootstrapPosts() {
     // Se houver backend remoto configurado, semear no remoto se vazio
-    if (hasRemote()) {
+    if (hasRemote() && !isAnonymousSession()) {
         const client = getSupabaseClient();
         try {
             const { data, error } = await client
@@ -144,7 +279,7 @@ async function bootstrapPosts() {
                     author: p.author,
                     title: p.title,
                     content: p.content,
-                    createdat: p.createdAt,
+                    createdAt: p.createdAt,
                 }));
                 const { error: insertError } = await client.from('posts').insert(payload);
                 if (insertError) {
@@ -196,13 +331,13 @@ function setupLogin() {
 }
 
 function setupPublisherAccess() {
-    const entry = document.getElementById('publisherEntry');
-    const overlay = document.getElementById('publisherOverlay');
-    const closeBtn = document.getElementById('publisherClose');
-    const loginSection = document.getElementById('publisherLoginSection');
+    const entry = document.getElementById('publisherEntry') || document.querySelector('.admin-entry');
+    const adminOverlay = document.getElementById('publisherOverlay');
+    const adminCloseBtn = document.getElementById('publisherClose');
+    const loginOverlay = document.getElementById('publisherLoginOverlay');
+    const loginCloseBtn = document.getElementById('publisherLoginClose');
     const loginForm = document.getElementById('publisherLoginForm');
     const loginStatus = document.getElementById('publisherLoginStatus');
-    const dashboard = document.getElementById('publisherDashboard');
     const welcome = document.getElementById('publisherWelcome');
     const postForm = document.getElementById('publisherPostForm');
     const postStatus = document.getElementById('publisherPostStatus');
@@ -216,31 +351,34 @@ function setupPublisherAccess() {
     const clearStatus = document.getElementById('publisherClearStatus');
     const restoreViewBtn = document.getElementById('publisherRestoreView');
     const connectionStatus = document.getElementById('connectionStatus');
+    const loginMessage = document.getElementById('publisherLoginMessage');
+    const loginContinueBtn = document.getElementById('publisherLoginContinue');
 
-    if (!entry || !overlay || !loginForm || !postForm) return;
+    if (!entry || !adminOverlay || !loginOverlay || !loginForm || !postForm) return;
 
     entry.addEventListener('click', () => {
-        overlay.classList.add('visible');
-        if (currentPublisher) {
-            showDashboard();
-        }
-        // Atualiza indicador de conexão
-        if (connectionStatus) {
-            const remote = hasRemote();
-            connectionStatus.textContent = remote ? 'Remoto ativo (Supabase)' : 'Visualização local (localStorage)';
-            connectionStatus.classList.remove('error', 'success');
-            connectionStatus.classList.add(remote ? 'success' : 'error');
+        openLoginOverlay();
+    });
+
+    adminCloseBtn?.addEventListener('click', closeAdminOverlay);
+    loginCloseBtn?.addEventListener('click', closeLoginOverlay);
+
+    adminOverlay.addEventListener('click', (event) => {
+        if (event.target === adminOverlay) {
+            closeAdminOverlay();
         }
     });
 
-    closeBtn?.addEventListener('click', () => {
-        overlay.classList.remove('visible');
+    loginOverlay.addEventListener('click', (event) => {
+        if (event.target === loginOverlay) {
+            closeLoginOverlay();
+        }
     });
 
-    overlay.addEventListener('click', (event) => {
-        if (event.target === overlay) {
-            overlay.classList.remove('visible');
-        }
+    loginContinueBtn?.addEventListener('click', () => {
+        if (!currentPublisher) return;
+        closeLoginOverlay();
+        openAdminOverlay();
     });
 
     clearAllBtn?.addEventListener('click', async () => {
@@ -287,55 +425,32 @@ function setupPublisherAccess() {
         await renderPosts();
     });
 
-    function showDashboard() {
-        loginSection?.classList.add('is-hidden');
-        dashboard?.classList.remove('is-hidden');
-        welcome.textContent = currentPublisher
-            ? `Olá, ${currentPublisher.name}! Prepare algo especial para os leitores.`
-            : '';
-        if (loginStatus) {
-            loginStatus.textContent = '';
-            loginStatus.classList.remove('error', 'success');
-        }
-        if (postStatus) {
-            postStatus.textContent = '';
-            postStatus.classList.remove('error', 'success');
-        }
-    }
-
-    function showLogin() {
-        loginSection?.classList.remove('is-hidden');
-        dashboard?.classList.add('is-hidden');
-        if (loginStatus) {
-            loginStatus.textContent = '';
-            loginStatus.classList.remove('error', 'success');
-        }
-        if (postStatus) {
-            postStatus.textContent = '';
-            postStatus.classList.remove('error', 'success');
-        }
-    }
-
-    loginForm.addEventListener('submit', (event) => {
+    loginForm.addEventListener('submit', async (event) => {
         event.preventDefault();
-        const user = userField?.value.trim() ?? '';
-        const password = passwordField?.value.trim() ?? '';
-        const key = user.toUpperCase();
-        const expected = PUBLISHER_CREDENTIALS[key];
-
-        if (expected && expected === password) {
-            currentPublisher = {
-                key,
-                name: PUBLISHER_DISPLAY[key] ?? capitalize(wordLower(user)),
-            };
+        const identifier = userField?.value.trim() ?? '';
+        const password = passwordField?.value ?? '';
+        if (!identifier || !password) {
+            if (loginStatus) {
+                loginStatus.textContent = 'Identificação e senha são obrigatórias.';
+                loginStatus.classList.remove('success');
+                loginStatus.classList.add('error');
+            }
+            return;
+        }
+        try {
+            await signInPublisher(identifier, password);
             loginForm.reset();
-            showDashboard();
+            closeLoginOverlay();
+            openAdminOverlay();
             updateUserInfo();
-            renderPosts();
-        } else if (loginStatus) {
-            loginStatus.textContent = 'Credenciais inválidas. Tente novamente.';
-            loginStatus.classList.remove('success');
-            loginStatus.classList.add('error');
+            await renderPosts();
+        } catch (error) {
+            console.error('Erro ao autenticar publicador:', error);
+            if (loginStatus) {
+                loginStatus.textContent = error?.message ?? 'Falha ao autenticar. Verifique credenciais.';
+                loginStatus.classList.remove('success');
+                loginStatus.classList.add('error');
+            }
         }
     });
 
@@ -408,12 +523,12 @@ function setupPublisherAccess() {
         }
     });
 
-    logoutBtn?.addEventListener('click', () => {
-        currentPublisher = null;
-        overlay.classList.remove('visible');
-        showLogin();
+    logoutBtn?.addEventListener('click', async () => {
+        await signOutPublisher();
+        closeAdminOverlay();
+        openLoginOverlay();
         updateUserInfo();
-        renderPosts();
+        await renderPosts();
     });
 
     backupDownload?.addEventListener('click', () => {
@@ -468,6 +583,118 @@ function setupPublisherAccess() {
             event.target.value = '';
         }
     });
+
+    function openAdminOverlay() {
+        adminOverlay.classList.add('visible');
+        prepareDashboard();
+        refreshConnectionStatus();
+    }
+
+    function closeAdminOverlay() {
+        adminOverlay.classList.remove('visible');
+    }
+
+    function openLoginOverlay() {
+        if (loginStatus) {
+            loginStatus.textContent = '';
+            loginStatus.classList.remove('error', 'success');
+        }
+        if (loginMessage) {
+            if (currentPublisher) {
+                loginMessage.textContent = `Sessão ativa como ${currentPublisher.name}.`;
+                loginMessage.classList.remove('error');
+                loginMessage.classList.add('success');
+            } else {
+                loginMessage.textContent = 'Informe sua identificação para acessar a área reservada.';
+                loginMessage.classList.remove('success');
+                loginMessage.classList.add('error');
+            }
+        }
+        if (loginContinueBtn) {
+            loginContinueBtn.classList.toggle('is-hidden', !currentPublisher);
+        }
+        loginOverlay.classList.add('visible');
+    }
+
+    function closeLoginOverlay() {
+        loginOverlay.classList.remove('visible');
+    }
+
+    function prepareDashboard() {
+        welcome.textContent = currentPublisher
+            ? `Olá, ${currentPublisher.name}! Prepare algo especial para os leitores.`
+            : '';
+        if (postStatus) {
+            postStatus.textContent = '';
+            postStatus.classList.remove('error', 'success');
+        }
+    }
+
+    function refreshConnectionStatus() {
+        if (!connectionStatus) return;
+        const remote = hasRemote();
+        connectionStatus.classList.remove('error', 'success');
+        if (!remote) {
+            connectionStatus.textContent = 'Visualização local (localStorage)';
+            connectionStatus.classList.add('error');
+            return;
+        }
+        if (currentPublisher) {
+            connectionStatus.textContent = `Supabase conectado como ${currentPublisher.name}`;
+        } else if (isAnonymousSession()) {
+            connectionStatus.textContent = 'Sessão anônima Supabase ativa';
+        } else {
+            connectionStatus.textContent = 'Sessão Supabase autenticada';
+        }
+        connectionStatus.classList.add('success');
+    }
+}
+
+async function signInPublisher(identifier, password) {
+    const client = getSupabaseClient();
+    if (!client) {
+        throw new Error('Configure o Supabase antes de autenticar publicadores.');
+    }
+    const profile = getPublisherProfile(identifier);
+    if (!profile?.email) {
+        throw new Error('Publicador não encontrado. Atualize o config.js com os e-mails corretos.');
+    }
+    const { data, error } = await client.auth.signInWithPassword({
+        email: profile.email,
+        password,
+    });
+    if (error) {
+        throw error;
+    }
+    if (data?.session) {
+        handleSessionChange(data.session);
+    }
+    return true;
+}
+
+async function signOutPublisher() {
+    const client = getSupabaseClient();
+    if (!client) {
+        currentPublisher = null;
+        return;
+    }
+    try {
+        await client.auth.signOut();
+    } catch (error) {
+        console.warn('Erro ao encerrar sessão do Supabase.', error);
+    } finally {
+        currentPublisher = null;
+        handleSessionChange(null);
+        await ensureAnonymousSession(client);
+    }
+}
+
+function getPublisherProfile(identifier) {
+    if (!identifier) return null;
+    const key = normalizeIdentifier(identifier);
+    const profile = PUBLISHER_ACCOUNTS[key];
+    if (!profile) return null;
+    return { ...profile, key };
 }
 
 async function renderPosts() {
@@ -494,6 +721,8 @@ async function renderPosts() {
         const byTitle = AUTO_HIDE_TITLES_ON_PAGE.has(p.title);
         return !(byId || byTitle);
     });
+
+    const likeSnapshots = await fetchLikeSnapshots(visiblePosts.map((p) => p.id));
 
     for (let index = 0; index < visiblePosts.length; index++) {
         const post = visiblePosts[index];
@@ -532,8 +761,8 @@ async function renderPosts() {
 
         const likeBtn = article.querySelector('.like-btn');
         const likeCount = article.querySelector('.like-count');
-        likeCount.textContent = loadLikes(post.id);
-        toggleLikeState(likeBtn, post.id);
+        const likeState = likeSnapshots[post.id] ?? buildLocalLikeState(post.id);
+        applyLikeState(likeBtn, likeCount, likeState);
         likeBtn.addEventListener('click', () => handleLike(post.id, likeBtn, likeCount));
 
         const form = article.querySelector('.feedback-form');
@@ -641,15 +870,15 @@ async function getPosts() {
     try {
         const { data, error } = await client
             .from('posts')
-            .select('id, author, title, content, createdat')
-            .order('createdat', { ascending: false });
+            .select('id, author, title, content, createdAt')
+            .order('createdAt', { ascending: false });
         if (error) throw error;
         const posts = (data || []).map((p) => ({
             id: p.id,
             author: p.author,
             title: p.title,
             content: Array.isArray(p.content) ? p.content : (p.content ? [String(p.content)] : []),
-            createdAt: p.createdat,
+            createdAt: p.createdAt,
         }));
         return posts;
     } catch (err) {
@@ -670,7 +899,7 @@ async function createPost(post) {
                 author: post.author,
                 title: post.title,
                 content: post.content,
-                createdat: post.createdAt,
+                createdAt: post.createdAt,
             };
             const { error } = await client.from('posts').insert(payload);
             if (error) throw error;
@@ -685,35 +914,90 @@ async function createPost(post) {
     return true;
 }
 
-function loadLikes(postId) {
+function loadLocalLikes(postId) {
     const stored = localStorage.getItem(STORAGE_KEYS.likes(postId));
     return stored ? Number(stored) : 0;
 }
 
-function loadLikedUsers(postId) {
+function loadLocalLikedUsers(postId) {
     const stored = localStorage.getItem(STORAGE_KEYS.likedBy(postId));
     if (!stored) return [];
     try {
         const parsed = JSON.parse(stored);
         return Array.isArray(parsed) ? parsed : [];
     } catch (error) {
-        console.error('Erro ao carregar curtidas:', error);
+        console.error('Erro ao carregar curtidas locais:', error);
         return [];
     }
 }
 
-function toggleLikeState(button, postId) {
-    if (!button) return;
+function buildLocalLikeState(postId) {
     ensureReaderIdentity();
-    const likedUsers = loadLikedUsers(postId);
-    button.classList.toggle('liked', likedUsers.includes(currentUser));
+    const likedUsers = loadLocalLikedUsers(postId);
+    return {
+        count: loadLocalLikes(postId),
+        liked: likedUsers.includes(currentUser),
+    };
 }
 
-function handleLike(postId, button, counter) {
-    ensureReaderIdentity();
-    const likedUsers = new Set(loadLikedUsers(postId));
-    let likes = loadLikes(postId);
+function applyLikeState(button, counter, state) {
+    if (counter) {
+        counter.textContent = state?.count ?? 0;
+    }
+    if (button) {
+        button.classList.toggle('liked', !!state?.liked);
+    }
+}
 
+async function fetchLikeSnapshots(postIds) {
+    const states = {};
+    if (!Array.isArray(postIds) || !postIds.length) {
+        return states;
+    }
+    const client = getSupabaseClient();
+    if (!client) {
+        postIds.forEach((id) => {
+            states[id] = buildLocalLikeState(id);
+        });
+        return states;
+    }
+    try {
+        const { data, error } = await client
+            .from('post_like_totals')
+            .select('postId, likes')
+            .in('postId', postIds);
+        if (error) throw error;
+        (data || []).forEach(({ postId, likes }) => {
+            states[postId] = { count: likes ?? 0, liked: false };
+        });
+        const fingerprint = getLikeFingerprint();
+        if (fingerprint) {
+            const { data: likedRows, error: likedError } = await client
+                .from('likes')
+                .select('postId')
+                .eq('fingerprint', fingerprint)
+                .in('postId', postIds);
+            if (likedError) throw likedError;
+            (likedRows || []).forEach(({ postId }) => {
+                states[postId] = {
+                    count: states[postId]?.count ?? 0,
+                    liked: true,
+                };
+            });
+        }
+    } catch (error) {
+        console.warn('Erro ao carregar curtidas no Supabase. Usando dados locais.', error);
+        postIds.forEach((id) => {
+            states[id] = buildLocalLikeState(id);
+        });
+    }
+    return states;
+}
+
+function toggleLocalLike(postId) {
+    ensureReaderIdentity();
+    const likedUsers = new Set(loadLocalLikedUsers(postId));
+    let likes = loadLocalLikes(postId);
     if (likedUsers.has(currentUser)) {
         likedUsers.delete(currentUser);
         likes = Math.max(0, likes - 1);
@@ -721,12 +1005,42 @@ function handleLike(postId, button, counter) {
         likedUsers.add(currentUser);
         likes += 1;
     }
-
     localStorage.setItem(STORAGE_KEYS.likes(postId), likes);
     localStorage.setItem(STORAGE_KEYS.likedBy(postId), JSON.stringify([...likedUsers]));
+    return {
+        count: likes,
+        liked: likedUsers.has(currentUser),
+    };
+}
 
-    counter.textContent = likes;
-    toggleLikeState(button, postId);
+async function handleLike(postId, button, counter) {
+    ensureReaderIdentity();
+    const client = getSupabaseClient();
+    const fingerprint = getLikeFingerprint();
+    if (client && fingerprint) {
+        try {
+            const currentlyLiked = button?.classList.contains('liked');
+            if (currentlyLiked) {
+                const { error } = await client
+                    .from('likes')
+                    .delete()
+                    .match({ postId, fingerprint });
+                if (error) throw error;
+            } else {
+                const { error } = await client
+                    .from('likes')
+                    .upsert({ postId, fingerprint }, { onConflict: 'postId,fingerprint' });
+                if (error) throw error;
+            }
+            const snapshot = await fetchLikeSnapshots([postId]);
+            applyLikeState(button, counter, snapshot[postId] ?? { count: 0, liked: false });
+            return;
+        } catch (error) {
+            console.warn('Erro ao sincronizar curtida com Supabase. Aplicando fallback local.', error);
+        }
+    }
+    const fallbackState = toggleLocalLike(postId);
+    applyLikeState(button, counter, fallbackState);
 }
 
 function loadFeedback(postId) {
@@ -752,14 +1066,14 @@ async function getFeedback(postId) {
     try {
         const { data, error } = await client
             .from('feedback')
-            .select('id, parentid, author, role, type, message, timestamp')
-            .eq('postid', postId)
+            .select('id, "parentId", author, role, type, message, timestamp')
+            .eq('postId', postId)
             .order('timestamp', { ascending: true });
         if (error) throw error;
         const entries = Array.isArray(data) ? data : [];
         return entries.map((row) => ({
             id: row.id,
-            parentId: row.parentid ?? null,
+            parentId: row.parentId ?? null,
             author: row.author,
             role: row.role,
             type: row.type,
@@ -778,8 +1092,8 @@ async function persistFeedback(postId, entry) {
         try {
             const payload = {
                 id: entry.id,
-                postid: postId,
-                parentid: entry.parentId,
+                postId,
+                parentId: entry.parentId,
                 author: entry.author,
                 role: entry.role,
                 type: entry.type,
@@ -1026,6 +1340,26 @@ function updateUserInfo() {
 
 function ensureReaderIdentity() {
     if (currentUser && typeof currentUser === 'string') return currentUser;
+    const sessionUser = authSession?.user;
+    if (sessionUser) {
+        const metadataName = sessionUser.user_metadata?.display_name
+            || sessionUser.user_metadata?.author
+            || sessionUser.user_metadata?.name;
+        if (metadataName) {
+            currentUser = metadataName;
+            return currentUser;
+        }
+        if (sessionUser.id) {
+            const alias = `Visitante-${sessionUser.id.slice(-4)}`;
+            currentUser = alias;
+            try {
+                localStorage.setItem(STORAGE_KEYS.user, alias);
+            } catch (_) {
+                // ignore storage errors
+            }
+            return currentUser;
+        }
+    }
     try {
         const stored = localStorage.getItem(STORAGE_KEYS.user);
         if (stored && typeof stored === 'string') {
@@ -1056,4 +1390,36 @@ function capitalize(value) {
 
 function wordLower(value) {
     return value ? value.toLowerCase() : '';
+}
+
+function normalizePublisherAccounts(defaults, overrides) {
+    const normalizedDefaults = {};
+    Object.entries(defaults || {}).forEach(([key, data]) => {
+        if (!data) return;
+        normalizedDefaults[key.toUpperCase()] = {
+            email: data.email || '',
+            displayName: data.displayName || data.name || capitalize(wordLower(key)),
+        };
+    });
+    if (!overrides || typeof overrides !== 'object') {
+        return normalizedDefaults;
+    }
+    Object.entries(overrides).forEach(([key, data]) => {
+        if (!data) return;
+        const upper = key.toUpperCase();
+        normalizedDefaults[upper] = {
+            email: data.email || normalizedDefaults[upper]?.email || '',
+            displayName: data.displayName || data.name || normalizedDefaults[upper]?.displayName || capitalize(wordLower(key)),
+        };
+    });
+    return normalizedDefaults;
+}
+
+function normalizeIdentifier(value) {
+    if (!value) return '';
+    return value
+        .trim()
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toUpperCase();
 }

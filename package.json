@@ -1,0 +1,17 @@
+{
+  "name": "conversa-filosofica-blog",
+  "version": "1.0.0",
+  "description": "Blog colaborativo para conversas filosóficas",
+  "main": "index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8000",
+    "build": "echo 'Site estático - nenhuma build necessária'",
+    "test": "echo 'Sem testes definidos'"
+  },
+  "keywords": ["blog", "filosofia", "colaborativo", "supabase"],
+  "author": "Paulo & Angelica",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

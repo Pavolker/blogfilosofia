@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Autoconhecimento Ativo</title>
+    <title>Conversa Filosófica</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,11 +13,12 @@
 <body>
     <!-- Janela inicial removida: a experiência começa direto na página -->
 
-    <div class="publisher-overlay" id="publisherOverlay" role="dialog" aria-modal="true" aria-labelledby="publisherTitle">
+    <div class="publisher-overlay" id="publisherLoginOverlay" role="dialog" aria-modal="true" aria-labelledby="publisherLoginTitle">
         <div class="publisher-panel">
-            <button type="button" class="publisher-close" id="publisherClose" aria-label="Fechar área de publicadores">&times;</button>
-            <section class="publisher-section" id="publisherLoginSection">
-                <h2 id="publisherTitle">Entrada reservada</h2>
+            <button type="button" class="publisher-close" id="publisherLoginClose" aria-label="Fechar área de login">&times;</button>
+            <section class="publisher-section">
+                <h2 id="publisherLoginTitle">Entrada reservada</h2>
+                <p class="publisher-status" id="publisherLoginMessage" role="status" aria-live="polite"></p>
                 <form id="publisherLoginForm" autocomplete="off">
                     <label for="publisherUser">Identificação</label>
                     <input type="text" id="publisherUser" placeholder="Digite sua identificação" autocapitalize="characters" required>
@@ -26,60 +27,96 @@
                     <button type="submit">Acessar</button>
                     <p class="publisher-status" id="publisherLoginStatus" role="status" aria-live="polite"></p>
                 </form>
+                <div class="publisher-login-actions">
+                    <button type="button" id="publisherLoginContinue" class="secondary is-hidden">Ir para o painel</button>
+                </div>
             </section>
+        </div>
+    </div>
 
-                <section class="publisher-section publisher-section--dashboard is-hidden" id="publisherDashboard">
-                    <header class="publisher-dashboard__header">
-                        <h2>Área de publicação</h2>
-                        <button type="button" id="publisherLogout" class="publisher-logout">Encerrar sessão</button>
-                    </header>
-                    <p class="publisher-status" id="connectionStatus" role="status" aria-live="polite">Visualização local (localStorage)</p>
-                    <p class="publisher-welcome" id="publisherWelcome"></p>
-                    <form id="publisherPostForm" class="publisher-post-form">
-                        <label for="publisherPostTitle">Título da publicação</label>
-                        <input type="text" id="publisherPostTitle" placeholder="Digite um título inspirador" required>
-                        <label for="publisherPostContent">Conteúdo (separe parágrafos com uma linha em branco)</label>
-                        <textarea id="publisherPostContent" rows="7" placeholder="Cada parágrafo em bloco separado por uma linha em branco" required></textarea>
-                        <button type="submit">Publicar</button>
-                        <p class="publisher-status" id="publisherPostStatus" role="status" aria-live="polite"></p>
-                    </form>
-                    <div class="publisher-reminder">
-                        <strong>Dica:</strong> responda aos comentários diretamente na publicação para oferecer réplicas e tréplicas.
-                    </div>
-                    <section class="publisher-section" id="publisherMaintenanceSection">
-                        <h2>Manutenção</h2>
-                        <button type="button" id="publisherClearAll" class="danger">Remover todas as publicações</button>
-                        <button type="button" id="publisherRestoreView">Restaurar visualização</button>
-                        <p class="publisher-status" id="publisherClearStatus" role="status" aria-live="polite"></p>
-                    </section>
-                    <section class="publisher-section" id="publisherBackupSection">
-                        <h2>Backup e Restauração</h2>
-                        <div class="publisher-backup-actions">
-                            <button type="button" id="backupDownload">Baixar backup (.json)</button>
-                            <label for="backupFile">Restaurar de backup</label>
-                            <input type="file" id="backupFile" accept="application/json">
-                        </div>
-                        <p class="publisher-status" id="backupStatus" role="status" aria-live="polite"></p>
-                    </section>
+    <div class="publisher-overlay" id="publisherOverlay" role="dialog" aria-modal="true" aria-labelledby="publisherTitle">
+        <div class="publisher-panel">
+            <button type="button" class="publisher-close" id="publisherClose" aria-label="Fechar área de publicadores">&times;</button>
+            <section class="publisher-section publisher-section--dashboard" id="publisherDashboard">
+                <header class="publisher-dashboard__header">
+                    <h2 id="publisherTitle">Área de publicação</h2>
+                    <button type="button" id="publisherLogout" class="publisher-logout">Encerrar sessão</button>
+                </header>
+                <p class="publisher-status" id="connectionStatus" role="status" aria-live="polite">Visualização local (localStorage)</p>
+                <p class="publisher-welcome" id="publisherWelcome"></p>
+                <form id="publisherPostForm" class="publisher-post-form">
+                    <label for="publisherPostTitle">Título da publicação</label>
+                    <input type="text" id="publisherPostTitle" placeholder="Digite um título inspirador" required>
+                    <label for="publisherPostContent">Conteúdo (separe parágrafos com uma linha em branco)</label>
+                    <textarea id="publisherPostContent" rows="7" placeholder="Cada parágrafo em bloco separado por uma linha em branco" required></textarea>
+                    <button type="submit">Publicar</button>
+                    <p class="publisher-status" id="publisherPostStatus" role="status" aria-live="polite"></p>
+                </form>
+                <div class="publisher-reminder">
+                    <strong>Dica:</strong> responda aos comentários diretamente na publicação para oferecer réplicas e tréplicas.
+                </div>
+                <section class="publisher-section" id="publisherMaintenanceSection">
+                    <h2>Manutenção</h2>
+                    <button type="button" id="publisherClearAll" class="danger">Remover todas as publicações</button>
+                    <button type="button" id="publisherRestoreView">Restaurar visualização</button>
+                    <p class="publisher-status" id="publisherClearStatus" role="status" aria-live="polite"></p>
                 </section>
+                <section class="publisher-section" id="publisherBackupSection">
+                    <h2>Backup e Restauração</h2>
+                    <div class="publisher-backup-actions">
+                        <button type="button" id="backupDownload">Baixar backup (.json)</button>
+                        <label for="backupFile">Restaurar de backup</label>
+                        <input type="file" id="backupFile" accept="application/json">
+                    </div>
+                    <p class="publisher-status" id="backupStatus" role="status" aria-live="polite"></p>
+                </section>
+            </section>
         </div>
     </div>
 
     <header class="topbar">
         <div class="logo">
-            <img src="IAA_colorido1.png" alt="Logo IAA" class="logo-img">
+            <button
+                id="sidebarToggle"
+                class="sidebar-toggle"
+                type="button"
+                aria-label="Abrir menu lateral"
+                aria-controls="mainSidebar"
+                aria-expanded="false"
+            >
+                <span class="material-symbols-outlined" id="sidebarToggleIcon">menu</span>
+                <span class="sidebar-toggle__label" id="sidebarToggleLabel">Abrir menu</span>
+            </button>
+            <img src="logofi.png" alt="" class="logo-img">
         </div>
-        <div class="site-title" aria-hidden="false">Plataforma de Conversa sobre Autoconhecimento Ativo</div>
-        <div class="user-info" id="userInfo" aria-live="polite">
-            <button id="publisherEntry" class="admin-entry" type="button" title="Administração">Administração</button>
+        <div class="site-title" aria-hidden="false">Conversas Filosóficas
+            <div class="site-subtitle">Sinapses do Vento</div>
         </div>
+        <div class="user-info" id="userInfo" aria-live="polite"></div>
     </header>
 
-    <main>
-        <section class="hero">
+    <!-- Menu lateral esquerdo -->
+    <aside class="sidebar" id="mainSidebar" aria-label="Menu lateral">
+        <nav class="side-nav">
+            <ul>
+                <li><a href="#heroSection">Início</a></li>
+                <li><a href="#postTimeline">Publicações</a></li>
+                <li><a href="https://www.mdh-hability.com" target="_blank" rel="noopener noreferrer">MDH</a></li>
+                <li><a href="https://angelicasatiro.com/pt-br/" target="_blank" rel="noopener noreferrer">Site Angélica</a></li>
+                <li><button type="button" class="admin-entry" title="Administração">Administração</button></li>
+            </ul>
+        </nav>
+    </aside>
+
+    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
+
+    <main class="main-with-sidebar">
+        <section class="hero" id="heroSection">
             <div class="hero-text">
-                <h2>Desperte sua jornada de crescimento</h2>
-                <p>Um espaço contínuo de diálogo e reflexão sobre o Autoconhecimento Ativo, onde Patricia Dupin, Higino Leite e Paulo Volker compartilham ideias, textos e conversas com os membros da plataforma, explorando a experiência do pensar, sentir e agir de forma lúcida na era da inteligência artificial.</p>
+                <h2>Pensa Conosco</h2>
+                <p>A plataforma de conversas filosóficas tem como foco a elucidação de problemas, formulação de perguntas e construção de hipóteses. Angélica Sátiro e Paulo Volker iniciam a conversa sobre temas ligados à existência humana contemporânea e convidam você para participar com questões enviadas ao vivo.</p>
+                <p>O nome "Sinapses do Vento" funciona como metáfora conceitual para a dinâmica das ideias que atravessam assuntos diferentes, mantendo a investigação filosófica como eixo central.</p>
+                <p>O objetivo é produzir pensamento sobre problemas reais, formulando perguntas tecnicamente formuladas, sem conclusão fechada, e mantendo o processo de pensamento como elemento principal do encontro.</p>
             </div>
         </section>
 
