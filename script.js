@@ -7,12 +7,6 @@ const STORAGE_KEYS = {
 };
 
 const AUTHOR_STYLES = {
-    Patricia: {
-        gradient: 'linear-gradient(135deg, #0D5C63, #1B7A7F)',
-    },
-    Higino: {
-        gradient: 'linear-gradient(135deg, #084C52, #0D5C63)',
-    },
     Paulo: {
         gradient: 'linear-gradient(135deg, #0A2A2F, #11646B)',
     },
@@ -22,15 +16,11 @@ const AUTHOR_STYLES = {
 };
 
 const AUTHOR_PHOTOS = {
-    Patricia: 'patricia.png',
-    Higino: 'higino.png',
     Paulo: 'paulo.png',
     Angelica: 'angelica.jpg',
 };
 
 const AUTHOR_RHYTHMS = {
-    Patricia: 'Ritmo leve cultivado por Patricia',
-    Higino: 'Pulso vibrante conduzido por Higino',
     Paulo: 'Cadência contemplativa guiada por Paulo',
     Angelica: 'Fluxo intuitivo conduzido por Angelica',
 };
@@ -55,28 +45,6 @@ let PUBLISHER_ACCOUNTS = normalizePublisherAccounts(
 
 const seedPosts = [
     {
-        id: 'patricia-amanhecer',
-        author: 'Patricia',
-        title: 'Respirar o amanhecer com presença',
-        content: [
-            'Comece o dia com três respirações profundas. Em cada inspiração, reconheça a vastidão de possibilidades que um novo amanhecer traz.',
-            'Permita que o silêncio matinal acolha suas intenções. Escreva três palavras que traduzam o que deseja nutrir em si hoje.',
-            'A serenidade nasce quando acolhemos o que sentimos sem pressa. Observe o seu corpo, agradeça por sustentá-lo e siga com gentileza.',
-        ],
-        createdAt: '2024-04-01T11:00:00.000Z',
-    },
-    {
-        id: 'higino-movimentos',
-        author: 'Higino',
-        title: 'Movimentos que despertam coragem',
-        content: [
-            'Encare o espelho e reconheça sua postura. Endireite os ombros, firme os pés no chão e sinta a firmeza emergir de dentro.',
-            'Transforme desconfortos em perguntas curiosas: o que essa sensação deseja me mostrar? Como posso responder com coragem?',
-            'A coragem não é ausência de medo, é a decisão de seguir em frente com o coração alerto. Escolha hoje um pequeno ato de bravura.',
-        ],
-        createdAt: '2024-04-03T10:30:00.000Z',
-    },
-    {
         id: 'paulo-sintonia',
         author: 'Paulo',
         title: 'Sintonia entre mente e intuição',
@@ -99,12 +67,12 @@ let hideAllPostsOnPage = false;
 const AUTO_HIDE_POST_IDS_ON_PAGE = new Set(
     (window.APP_CONFIG && Array.isArray(window.APP_CONFIG.hiddenPostIds))
         ? window.APP_CONFIG.hiddenPostIds
-        : ['patricia-amanhecer', 'higino-movimentos', 'paulo-sintonia']
+        : ['paulo-sintonia']
 );
 const AUTO_HIDE_TITLES_ON_PAGE = new Set(
     (window.APP_CONFIG && Array.isArray(window.APP_CONFIG.hiddenPostTitles))
         ? window.APP_CONFIG.hiddenPostTitles
-        : ['Respirar o amanhecer com presença', 'Movimentos que despertam coragem', 'Sintonia entre mente e intuição']
+        : ['Sintonia entre mente e intuição']
 );
 
 // Integração remota opcional (Supabase) com fallback para localStorage
