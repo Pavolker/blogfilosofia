@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conversa Filosófica</title>
+    <title>Sinapses do Vento</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400" rel="stylesheet">
 </head>
 <body>
@@ -17,14 +17,14 @@
         <div class="publisher-panel">
             <button type="button" class="publisher-close" id="publisherLoginClose" aria-label="Fechar área de login">&times;</button>
             <section class="publisher-section">
-                <h2 id="publisherLoginTitle">Entrada reservada</h2>
+                <h2 id="publisherLoginTitle">Entrada reservada para Paulo e Angélica</h2>
                 <p class="publisher-status" id="publisherLoginMessage" role="status" aria-live="polite"></p>
                 <form id="publisherLoginForm" autocomplete="off">
-                    <label for="publisherUser">Identificação</label>
-                    <input type="text" id="publisherUser" placeholder="Digite sua identificação" autocapitalize="characters" required>
+                    <label for="publisherUser">Nome de acesso</label>
+                    <input type="text" id="publisherUser" placeholder="Paulo Volker ou Angélica Satiro" autocapitalize="words" autocomplete="username" required>
                     <label for="publisherPassword">Senha</label>
-                    <input type="password" id="publisherPassword" placeholder="Digite sua senha" required>
-                    <button type="submit">Acessar</button>
+                    <input type="password" id="publisherPassword" placeholder="Nome em letras minúsculas" autocomplete="current-password" required>
+                    <button type="submit">Entrar</button>
                     <p class="publisher-status" id="publisherLoginStatus" role="status" aria-live="polite"></p>
                 </form>
                 <div class="publisher-login-actions">
@@ -87,41 +87,354 @@
                 <span class="material-symbols-outlined" id="sidebarToggleIcon">menu</span>
                 <span class="sidebar-toggle__label" id="sidebarToggleLabel">Abrir menu</span>
             </button>
-            <img src="logofi.png" alt="" class="logo-img">
         </div>
-        <div class="site-title" aria-hidden="false">Conversas Filosóficas
-            <div class="site-subtitle">Sinapses do Vento</div>
+        <div class="site-title" aria-hidden="false">Sinapses do Vento
+            <div class="site-subtitle">UMA ABORDAGEM DIALÓGICA PARA A FINITUDE</div>
         </div>
-        <div class="user-info" id="userInfo" aria-live="polite"></div>
+        <div class="user-info" id="userInfo" aria-live="polite">
+            <button type="button" class="admin-entry" id="enterButtonStatic">Entrar</button>
+        </div>
     </header>
 
     <!-- Menu lateral esquerdo -->
     <aside class="sidebar" id="mainSidebar" aria-label="Menu lateral">
         <nav class="side-nav">
             <ul>
-                <li><a href="#heroSection">Início</a></li>
-                <li><a href="#postTimeline">Publicações</a></li>
-                <li><a href="https://www.mdh-hability.com" target="_blank" rel="noopener noreferrer">MDH</a></li>
-                <li><a href="https://angelicasatiro.com/pt-br/" target="_blank" rel="noopener noreferrer">Site Angélica</a></li>
-                <li><button type="button" class="admin-entry" title="Administração">Administração</button></li>
+                <li><a href="/">Início</a></li>
+                <li><button type="button" id="methodButton">O Método</button></li>
+                <li><button type="button" id="blogDiaryButton">Blog/Diário</button></li>
+                <li><a href="livro-capa-dura.html">Livro (Capa Dura)</a></li>
+                <li><a href="https://sinapses-v.netlify.app" target="_blank" rel="noopener noreferrer">Livro Digital</a></li>
+                <li><button type="button" id="coursesButton">Cursos</button></li>
+                <li><button type="button" id="palestrasButton">Palestra</button></li>
+                <li><button type="button" id="publisherEntry" class="admin-entry" title="Administração">Administração</button></li>
             </ul>
         </nav>
     </aside>
 
     <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
 
+    <div class="method-modal" id="methodModal" aria-hidden="true">
+        <div class="method-modal__backdrop" data-method-close></div>
+        <section class="method-modal__panel" role="dialog" aria-modal="true" aria-labelledby="methodModalTitle">
+            <button type="button" class="method-modal__close" data-method-close aria-label="Fechar método">&times;</button>
+            <header class="method-modal__header">
+                <p class="method-modal__eyebrow">O MÉTODO SINÁPTICO</p>
+                <h2 id="methodModalTitle">Uma abordagem dialógica para a finitude</h2>
+                <p class="method-modal__lead">
+                    O método parte da ideia de que a crise biológica precisa ser acompanhada por
+                    sustentação simbólica, afetiva e filosófica. Em vez de reduzir a experiência à
+                    doença, ele organiza uma forma de atravessar o fim com vínculo, verdade, beleza e memória.
+                </p>
+            </header>
+
+            <div class="method-modal__grid">
+                <article class="method-card">
+                    <h3>1. Refúgio dialógico</h3>
+                    <p>
+                        Antes da crise, constrói-se um espaço seguro de interlocução. A conversa pode
+                        parecer sem finalidade prática, mas fortalece o vínculo, sustenta a honestidade
+                        radical e mantém a presença mesmo à distância.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>2. Desmoralização da doença</h3>
+                    <p>
+                        A enfermidade não é tratada como culpa, castigo ou expiação. O método propõe um
+                        olhar fenomenológico: observar o caos biológico com interesse, retirando o peso moral
+                        e substituindo o medo por investigação.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>3. Estetização da existência</h3>
+                    <p>
+                        A beleza não funciona como fuga, mas como suporte vital. Música, literatura, arte,
+                        natureza e os pequenos rituais cotidianos ajudam a dar forma à dor e a preservar a
+                        pulsação de vida.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>4. Reengenharia do tempo</h3>
+                    <p>
+                        O método desloca o foco da escassez para a densidade do tempo vivido. Um dia pode
+                        conter uma eternidade quando se habita o presente com atenção, memória e presença.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>5. Integração da finitude</h3>
+                    <p>
+                        O objetivo final não é vencer a morte, mas preservar a integridade do ser. A morte é
+                        recolocada no ciclo da vida, enquanto autobiografia, legado e rendição ativa costuram
+                        a continuidade dos afetos e das obras.
+                    </p>
+                </article>
+            </div>
+
+            <footer class="method-modal__footer">
+                <p>
+                    Enfrentar o fim não é uma batalha contra a morte, mas uma afirmação radical da vida.
+                </p>
+            </footer>
+        </section>
+    </div>
+
+    <div class="method-modal" id="blogDiaryModal" aria-hidden="true">
+        <div class="method-modal__backdrop" data-blog-close></div>
+        <section class="method-modal__panel" role="dialog" aria-modal="true" aria-labelledby="blogDiaryModalTitle">
+            <button type="button" class="method-modal__close" data-blog-close aria-label="Fechar blog e diário">&times;</button>
+            <header class="method-modal__header">
+                <p class="method-modal__eyebrow">BLOG / DIÁRIO</p>
+                <h2 id="blogDiaryModalTitle">Uma conversa viva entre Angélica, Paulo e a comunidade</h2>
+                <p class="method-modal__lead">
+                    Nesta plataforma, Angélica e Paulo continuam conversando todos os dias. Eles compartilham
+                    ideias, perspectivas, pequenos textos, notícias, reflexões e fragmentos de pensamento que
+                    acompanham o ritmo da vida em movimento.
+                </p>
+            </header>
+
+            <div class="method-modal__grid">
+                <article class="method-card">
+                    <h3>Conversas contínuas</h3>
+                    <p>
+                        O blog funciona como um diário compartilhado: cada publicação é uma extensão da conversa
+                        entre os dois autores, mas também um convite para que novas vozes entrem no diálogo.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>Textos, notícias e ideias</h3>
+                    <p>
+                        Aqui aparecem pensamentos curtos, notas de leitura, pequenos ensaios, relatos de
+                        cotidiano e notícias que fazem sentido para a comunidade filosófica e afetiva do projeto.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>Participação da comunidade</h3>
+                    <p>
+                        Os usuários podem se inscrever na comunidade, registrar seus dados e passar a
+                        participar da conversa com comentários, perguntas, respostas e curadorias de sentido.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>Um espaço de vínculo</h3>
+                    <p>
+                        A proposta é manter uma presença diária, atenta e humana. Não se trata apenas de ler,
+                        mas de entrar em relação com o pensamento que se constrói aqui, junto com os autores.
+                    </p>
+                </article>
+            </div>
+
+            <footer class="method-modal__footer method-modal__footer--actions">
+                <p>
+                    Para participar, inscreva-se na comunidade e entre na conversa em andamento.
+                </p>
+                <button type="button" id="blogDiaryJoinButton" class="method-modal__action">
+                    Inscrever-se na comunidade
+                </button>
+            </footer>
+        </section>
+    </div>
+
+    <div class="method-modal" id="coursesModal" aria-hidden="true">
+        <div class="method-modal__backdrop" data-courses-close></div>
+        <section class="method-modal__panel" role="dialog" aria-modal="true" aria-labelledby="coursesModalTitle">
+            <button type="button" class="method-modal__close" data-courses-close aria-label="Fechar cursos">&times;</button>
+            <header class="method-modal__header">
+                <p class="method-modal__eyebrow">EDUCAÇÃO E EXPERIÊNCIA (EDU &amp; EVENTS)</p>
+                <h2 id="coursesModalTitle">Produtos para aprofundar e aplicar o método</h2>
+                <p class="method-modal__lead">
+                    Produtos para quem deseja aprofundar e aplicar o Método Sináptico em formatos educativos,
+                    vivenciais e de acompanhamento.
+                </p>
+            </header>
+
+            <div class="method-modal__grid method-modal__grid--single">
+                <article class="method-card method-card--featured">
+                    <h3>Curso Online: A Arte de Enfrentar a Finitude</h3>
+                    <p>
+                        Uma formação pensada para pessoas que atravessam situações de crise e também para quem
+                        acompanha esse processo de perto. O curso combina fundamentos filosóficos, sustentação
+                        simbólica e ferramentas de aplicação cotidiana.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>Formato</h3>
+                    <p>
+                        Aulas gravadas + encontros ao vivo, com linguagem acessível, conteúdo profundo e espaço
+                        para reflexão, escuta e integração das experiências.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>Módulos</h3>
+                    <p>
+                        Os encontros são organizados a partir dos 5 pilares do Método Sináptico:
+                        Refúgio, Desmoralização da Doença, Estética, Tempo e Integração.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>Público-alvo</h3>
+                    <p>
+                        Pessoas em situações de crise, familiares, profissionais de saúde que buscam
+                        humanização e psicólogos interessados em uma abordagem sensível e reflexiva.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>Plataforma</h3>
+                    <p>
+                        O curso pode ser hospedado em Hotmart ou Teachable, conforme a estrutura escolhida para
+                        a oferta e a experiência de acompanhamento.
+                    </p>
+                </article>
+            </div>
+
+            <section class="course-interest">
+                <div class="course-interest__copy">
+                    <p class="method-modal__eyebrow">Ficha de interesse</p>
+                    <h3>Quero ser avisado quando o curso estiver disponível</h3>
+                    <p>
+                        Preencha seus dados básicos para entrar na lista de interesse. Assim conseguimos organizar
+                        a comunidade e avisar sobre a abertura das inscrições.
+                    </p>
+                </div>
+
+                <form id="courseInterestForm" class="course-interest__form">
+                    <label for="courseInterestName">Nome</label>
+                    <input type="text" id="courseInterestName" placeholder="Seu nome completo" required>
+
+                    <label for="courseInterestEmail">Email</label>
+                    <input type="email" id="courseInterestEmail" placeholder="seuemail@exemplo.com" required>
+
+                    <label for="courseInterestCity">Cidade</label>
+                    <input type="text" id="courseInterestCity" placeholder="Sua cidade" required>
+
+                    <button type="submit" class="method-modal__action">Manifestar interesse</button>
+                    <p class="course-interest__status" id="courseInterestStatus" role="status" aria-live="polite"></p>
+                </form>
+            </section>
+        </section>
+    </div>
+
+    <div class="method-modal" id="palestrasModal" aria-hidden="true">
+        <div class="method-modal__backdrop" data-palestras-close></div>
+        <section class="method-modal__panel" role="dialog" aria-modal="true" aria-labelledby="palestrasModalTitle">
+            <button type="button" class="method-modal__close" data-palestras-close aria-label="Fechar palestras">&times;</button>
+            <header class="method-modal__header">
+                <p class="method-modal__eyebrow">CICLO DE PALESTRAS E WORKSHOPS</p>
+                <h2 id="palestrasModalTitle">Encontros para pensar, ler e performar a experiência</h2>
+                <p class="method-modal__lead">
+                    O ciclo de palestras foi pensado como uma extensão viva do livro e do método: um espaço de
+                    fala, escuta e presença em que a reflexão filosófica encontra o corpo, a voz e a cena.
+                </p>
+            </header>
+
+            <div class="method-modal__grid">
+                <article class="method-card method-card--featured">
+                    <h3>Temas centrais</h3>
+                    <p>
+                        <strong>Filosofia como Remédio</strong>, <strong>A Escrita de Si</strong> e
+                        <strong>Humanização na Saúde</strong>. Cada encontro pode aprofundar um eixo do projeto,
+                        articulando experiência, linguagem e cuidado.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>Formato</h3>
+                    <p>
+                        As atividades podem acontecer de forma presencial ou híbrida, conforme o espaço,
+                        a agenda e o público convidado.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>Diferencial</h3>
+                    <p>
+                        As palestras são performáticas: leitura de trechos do livro, pausas de ressonância e
+                        explanação teórica se entrelaçam para transformar o conteúdo em experiência.
+                    </p>
+                </article>
+
+                <article class="method-card">
+                    <h3>Proposta de encontro</h3>
+                    <p>
+                        Mais do que uma exposição de ideias, cada evento busca criar vínculo com a plateia,
+                        abrindo espaço para conversas posteriores, perguntas e desdobramentos práticos.
+                    </p>
+                </article>
+            </div>
+
+            <footer class="method-modal__footer">
+                <p>
+                    Um ciclo de palestras para aproximar o pensamento da escuta e o livro da presença ao vivo.
+                </p>
+            </footer>
+
+            <section class="course-interest">
+                <div class="course-interest__copy">
+                    <p class="method-modal__eyebrow">Agenda e contato</p>
+                    <h3>Quero levar esta palestra para minha instituição ou evento</h3>
+                    <p>
+                        Preencha seus dados básicos para solicitar agenda, conversar sobre formatos e
+                        receber informações sobre disponibilidade para encontros presenciais ou híbridos.
+                    </p>
+                </div>
+
+                <form id="palestraContactForm" class="course-interest__form">
+                    <label for="palestraContactName">Nome</label>
+                    <input type="text" id="palestraContactName" placeholder="Seu nome completo" required>
+
+                    <label for="palestraContactEmail">Email</label>
+                    <input type="email" id="palestraContactEmail" placeholder="seuemail@exemplo.com" required>
+
+                    <label for="palestraContactCity">Cidade</label>
+                    <input type="text" id="palestraContactCity" placeholder="Sua cidade" required>
+
+                    <button type="submit" class="method-modal__action">Solicitar agenda</button>
+                    <p class="course-interest__status" id="palestraContactStatus" role="status" aria-live="polite"></p>
+                </form>
+            </section>
+        </section>
+    </div>
+
     <main class="main-with-sidebar">
-        <section class="hero" id="heroSection">
-            <div class="hero-text">
-                <h2>Pensa Conosco</h2>
-                <p>A plataforma de conversas filosóficas tem como foco a elucidação de problemas, formulação de perguntas e construção de hipóteses. Angélica Sátiro e Paulo Volker iniciam a conversa sobre temas ligados à existência humana contemporânea e convidam você para participar com questões enviadas ao vivo.</p>
-                <p>O nome "Sinapses do Vento" funciona como metáfora conceitual para a dinâmica das ideias que atravessam assuntos diferentes, mantendo a investigação filosófica como eixo central.</p>
-                <p>O objetivo é produzir pensamento sobre problemas reais, formulando perguntas tecnicamente formuladas, sem conclusão fechada, e mantendo o processo de pensamento como elemento principal do encontro.</p>
+        <section class="community-intro" id="dialogCommunity">
+            <div class="community-intro__card">
+                <h2>Comunidade de Diálogo</h2>
+                <p>Um espaço acolhedor e moderado para perguntas, relatos e reflexões sobre finitude, onde o vínculo, a verdade e a beleza sustentam o pensamento compartilhado.</p>
+                <p>Participe comentando nas publicações ou apenas acompanhe as conversas — a densidade do tempo vivido importa mais do que sua extensão.</p>
+                <a class="community-intro__cta" href="conversas.html">Entrar nas conversas</a>
             </div>
         </section>
 
-        <section class="timeline" id="postTimeline" aria-live="polite">
-            <!-- Os artigos serão injetados via JavaScript -->
+        <section class="featured-conversation" aria-label="Conversa de abertura">
+            <article class="featured-conversation__item">
+                <div class="author-avatar featured-conversation__avatar">
+                    <img src="angelica.jpg" alt="Foto de Angélica Satiro">
+                </div>
+                <div class="featured-conversation__content">
+                    <p class="featured-conversation__name">Angélica</p>
+                    <p>Bom dia Paulo, ontem fiz uma palestra na Galícia e lembrei de você. Aquela sua questão sobre a paz dos cenários é a soma da paz de cada uma das pessoas que estão nele. Lembra disso?</p>
+                </div>
+            </article>
+
+            <article class="featured-conversation__item">
+                <div class="author-avatar featured-conversation__avatar">
+                    <img src="paulo.png" alt="Foto de Paulo Volker">
+                </div>
+                <div class="featured-conversation__content">
+                    <p class="featured-conversation__name">Paulo</p>
+                    <p>Ei Angélica. Sim, é claro. Uma ideia que temos ainda que explorar. A "paz individual" de um entra em ressonância com a "paz individual" do outro e esse processo tende a se expandir nos ambientes. Falamos disso no "Sinapses do Vento".</p>
+                </div>
+            </article>
         </section>
     </main>
 
@@ -165,10 +478,7 @@
 
     <!-- Entrada reservada agora está no header como “Administração” -->
 
-    <!-- Backend opcional: Supabase via CDN (carrega window.supabase) -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- Configuração opcional: crie config.js com window.APP_CONFIG.supabaseUrl/AnonKey -->
-    <script src="config.js"></script>
-    <script src="script.js" defer></script>
+    <script src="config.js?v=20260114"></script>
+    <script src="script.js?v=20260114" defer></script>
 </body>
 </html>

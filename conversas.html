@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conversas - Sinapses do Vento</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400" rel="stylesheet">
+</head>
+<body>
+    <script src="config.js?v=20260114"></script>
+    <script>
+        window.APP_CONFIG = { ...window.APP_CONFIG, pageMode: 'conversations' };
+    </script>
+
+    <div class="conversation-access-overlay" id="conversationAccessOverlay" role="dialog" aria-modal="true" aria-labelledby="conversationAccessTitle">
+        <div class="conversation-access-panel">
+            <p class="method-modal__eyebrow">Acesso restrito</p>
+            <h2 id="conversationAccessTitle">Esta página é reservada para usuários inscritos</h2>
+            <p class="publisher-status" id="conversationAccessMessage" role="status" aria-live="polite">
+                Inscreva-se para entrar na conversa completa entre Angélica, Paulo e a comunidade.
+            </p>
+            <button type="button" id="conversationAccessButton" class="method-modal__action">Inscrever-se e entrar</button>
+        </div>
+    </div>
+
+    <header class="topbar">
+        <div class="logo">
+            <a class="sidebar-toggle" href="/" aria-label="Voltar para a página inicial">
+                <span class="material-symbols-outlined">arrow_back</span>
+                <span class="sidebar-toggle__label">Página inicial</span>
+            </a>
+        </div>
+        <div class="site-title" aria-hidden="false">Sinapses do Vento
+            <div class="site-subtitle">CONVERSAS EM ANDAMENTO</div>
+        </div>
+        <div class="user-info" id="userInfo" aria-live="polite">
+            <button type="button" class="admin-entry" id="enterButtonStatic">Entrar</button>
+        </div>
+    </header>
+
+    <main class="main-with-sidebar">
+        <section class="featured-conversation" aria-label="Conversa de abertura">
+            <article class="featured-conversation__item">
+                <div class="author-avatar featured-conversation__avatar">
+                    <img src="angelica.jpg" alt="Foto de Angélica Satiro">
+                </div>
+                <div class="featured-conversation__content">
+                    <p class="featured-conversation__name">Angélica</p>
+                    <p>Bom dia Paulo, ontem fiz uma palestra na Galícia e lembrei de você. Aquela sua questão sobre a paz dos cenários é a soma da paz de cada uma das pessoas que estão nele. Lembra disso?</p>
+                </div>
+            </article>
+
+            <article class="featured-conversation__item">
+                <div class="author-avatar featured-conversation__avatar">
+                    <img src="paulo.png" alt="Foto de Paulo Volker">
+                </div>
+                <div class="featured-conversation__content">
+                    <p class="featured-conversation__name">Paulo</p>
+                    <p>Ei Angélica. Sim, é claro. Uma ideia que temos ainda que explorar. A "paz individual" de um entra em ressonância com a "paz individual" do outro e esse processo tende a se expandir nos ambientes. Falamos disso no "Sinapses do Vento".</p>
+                </div>
+            </article>
+        </section>
+
+        <section class="conversation-composer" aria-label="Publicar mensagem">
+            <form id="communityMessageForm" class="conversation-composer__bar">
+                <textarea id="communityMessageContent" rows="1" placeholder="Escreva uma mensagem..." required></textarea>
+                <button type="submit" class="conversation-composer__send" aria-label="Publicar mensagem">
+                    <span class="material-symbols-outlined">send</span>
+                </button>
+            </form>
+            <p class="conversation-composer__hint">Pressione Enter para publicar ou use Shift+Enter para quebrar linha.</p>
+            <p class="conversation-composer__status" id="communityMessageStatus" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="timeline" id="postTimeline" aria-live="polite">
+            <!-- Os artigos serão injetados via JavaScript -->
+        </section>
+    </main>
+
+    <template id="postTemplate">
+        <article class="post">
+            <header class="post-header">
+                <div class="author-avatar" data-author=""></div>
+                <div>
+                    <h3 class="post-title"></h3>
+                    <span class="post-meta"></span>
+                </div>
+            </header>
+            <div class="post-body"></div>
+            <footer class="post-footer">
+                <button class="like-btn" type="button">
+                    <span class="material-symbols-outlined">favorite</span>
+                    <span class="like-count">0</span>
+                </button>
+                <div class="engagement">
+                    <h4>Participe</h4>
+                    <form class="feedback-form">
+                        <label class="sr-only">Escreva seu comentário ou pergunta</label>
+                        <textarea placeholder="Compartilhe um comentário ou faça uma pergunta" required></textarea>
+                        <div class="feedback-actions">
+                            <label>
+                                <input type="radio" name="feedbackType" value="Comentário" checked>
+                                Comentário
+                            </label>
+                            <label>
+                                <input type="radio" name="feedbackType" value="Pergunta">
+                                Pergunta
+                            </label>
+                            <button type="submit">Enviar</button>
+                        </div>
+                    </form>
+                    <ul class="feedback-list"></ul>
+                </div>
+            </footer>
+        </article>
+    </template>
+
+    <script src="script.js?v=20260114" defer></script>
+</body>
+</html>
