@@ -1,484 +1,244 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sinapses do Vento</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@400" rel="stylesheet">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title data-i18n="site.title">Sinapses do Vento — O Livro</title>
+  <meta name="description" content="Uma abordagem dialógica para a finitude. Livro de Angélica Sátiro e Paulo Volker.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Janela inicial removida: a experiência começa direto na página -->
 
-    <div class="publisher-overlay" id="publisherLoginOverlay" role="dialog" aria-modal="true" aria-labelledby="publisherLoginTitle">
-        <div class="publisher-panel">
-            <button type="button" class="publisher-close" id="publisherLoginClose" aria-label="Fechar área de login">&times;</button>
-            <section class="publisher-section">
-                <h2 id="publisherLoginTitle">Entrada reservada para Paulo e Angélica</h2>
-                <p class="publisher-status" id="publisherLoginMessage" role="status" aria-live="polite"></p>
-                <form id="publisherLoginForm" autocomplete="off">
-                    <label for="publisherUser">Nome de acesso</label>
-                    <input type="text" id="publisherUser" placeholder="Paulo Volker ou Angélica Satiro" autocapitalize="words" autocomplete="username" required>
-                    <label for="publisherPassword">Senha</label>
-                    <input type="password" id="publisherPassword" placeholder="Nome em letras minúsculas" autocomplete="current-password" required>
-                    <button type="submit">Entrar</button>
-                    <p class="publisher-status" id="publisherLoginStatus" role="status" aria-live="polite"></p>
-                </form>
-                <div class="publisher-login-actions">
-                    <button type="button" id="publisherLoginContinue" class="secondary is-hidden">Ir para o painel</button>
-                </div>
-            </section>
+  <!-- ==================== SIDEBAR MENU ==================== -->
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar__header">
+      <span class="sidebar__title">Menu</span>
+      <button class="sidebar__close" id="sidebarClose" aria-label="Fechar menu" type="button">
+        <span></span><span></span>
+      </button>
+    </div>
+    <ul class="sidebar__menu">
+      <li class="sidebar__item">
+        <a href="https://angelicasatiro.com" class="sidebar__link" target="_blank" rel="noopener noreferrer">
+          <span class="sidebar__text">Página da Angélica</span>
+        </a>
+      </li>
+      <li class="sidebar__item">
+        <a href="https://texto-dual.netlify.app/#/" class="sidebar__link" target="_blank" rel="noopener noreferrer">
+          <span class="sidebar__text">Página do Paulo</span>
+        </a>
+      </li>
+      <li class="sidebar__item">
+        <a href="#" class="sidebar__link" data-section="palestras">
+          <span class="sidebar__text">Palestras</span>
+        </a>
+      </li>
+      <li class="sidebar__item">
+        <a href="#" class="sidebar__link" data-section="cursos">
+          <span class="sidebar__text">Cursos</span>
+        </a>
+      </li>
+      <li class="sidebar__item">
+        <a href="#" class="sidebar__link" data-section="workshops">
+          <span class="sidebar__text">Workshops</span>
+        </a>
+      </li>
+      <li class="sidebar__item">
+        <a href="#" class="sidebar__link" data-section="apps">
+          <span class="sidebar__text">Aplicativos</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- ==================== SIDEBAR OVERLAY ==================== -->
+  <div class="sidebar__overlay" id="sidebarOverlay"></div>
+
+  <!-- ==================== TOPBAR ==================== -->
+  <header class="topbar" id="topbar">
+    <div class="topbar__inner">
+      <button class="sidebar__toggle" id="sidebarToggle" aria-label="Abrir menu" type="button">
+        <span></span><span></span><span></span>
+      </button>
+      <span class="topbar__logo">SINAPSES DO VENTO</span>
+      <nav class="topbar__nav">
+        <a href="#sobre" data-i18n="nav.book">O livro</a>
+        <a href="#autores" data-i18n="nav.authors">Autores</a>
+        <a href="#comprar" class="topbar__cta" data-i18n="nav.buy">Adquirir</a>
+      </nav>
+      <div class="lang-switcher">
+        <button class="lang-btn" data-lang="pt" title="Português" aria-label="Mudar para português">🇧🇷</button>
+        <button class="lang-btn" data-lang="es" title="Español" aria-label="Cambiar a español">🇪🇸</button>
+      </div>
+      <button class="topbar__toggle" id="navToggle" aria-label="Menu" type="button">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN CONTENT ==================== -->
+  <main class="main-content">
+
+  <!-- ==================== HERO ==================== -->
+  <section class="hero" id="hero">
+    <div class="hero__bg"></div>
+    <div class="hero__inner">
+      <div class="hero__text">
+        <p class="hero__kicker" data-i18n="hero.kicker">UMA OBRA LITERÁRIO-FILOSÓFICA</p>
+        <h1 class="hero__title">SINAPSES<br>DO VENTO</h1>
+        <p class="hero__subtitle" data-i18n="hero.subtitle">Uma abordagem dialógica para a finitude</p>
+        <p class="hero__desc" data-i18n="hero.desc">
+          Dois amigos sustentam 153 dias de diálogo entre Brasil e Espanha,
+          atravessando doença, amizade, vulnerabilidade, criatividade e pensamento.
+          O resultado é uma peça íntima, reflexiva e profundamente humana.
+        </p>
+        <div class="hero__actions">
+          <a href="https://pay.hotmart.com/N106672153S" target="_blank" rel="noopener" class="btn btn--primary" data-i18n="hero.cta_read">Quero ler</a>
+          <a href="#sobre" class="btn btn--ghost" data-i18n="hero.cta_know">Conhecer</a>
         </div>
-    </div>
-
-    <div class="publisher-overlay" id="publisherOverlay" role="dialog" aria-modal="true" aria-labelledby="publisherTitle">
-        <div class="publisher-panel">
-            <button type="button" class="publisher-close" id="publisherClose" aria-label="Fechar área de publicadores">&times;</button>
-            <section class="publisher-section publisher-section--dashboard" id="publisherDashboard">
-                <header class="publisher-dashboard__header">
-                    <h2 id="publisherTitle">Área de publicação</h2>
-                    <button type="button" id="publisherLogout" class="publisher-logout">Encerrar sessão</button>
-                </header>
-                <p class="publisher-status" id="connectionStatus" role="status" aria-live="polite">Visualização local (localStorage)</p>
-                <p class="publisher-welcome" id="publisherWelcome"></p>
-                <form id="publisherPostForm" class="publisher-post-form">
-                    <label for="publisherPostTitle">Título da publicação</label>
-                    <input type="text" id="publisherPostTitle" placeholder="Digite um título inspirador" required>
-                    <label for="publisherPostContent">Conteúdo (separe parágrafos com uma linha em branco)</label>
-                    <textarea id="publisherPostContent" rows="7" placeholder="Cada parágrafo em bloco separado por uma linha em branco" required></textarea>
-                    <button type="submit">Publicar</button>
-                    <p class="publisher-status" id="publisherPostStatus" role="status" aria-live="polite"></p>
-                </form>
-                <div class="publisher-reminder">
-                    <strong>Dica:</strong> responda aos comentários diretamente na publicação para oferecer réplicas e tréplicas.
-                </div>
-                <section class="publisher-section" id="publisherMaintenanceSection">
-                    <h2>Manutenção</h2>
-                    <button type="button" id="publisherClearAll" class="danger">Remover todas as publicações</button>
-                    <button type="button" id="publisherRestoreView">Restaurar visualização</button>
-                    <p class="publisher-status" id="publisherClearStatus" role="status" aria-live="polite"></p>
-                </section>
-                <section class="publisher-section" id="publisherBackupSection">
-                    <h2>Backup e Restauração</h2>
-                    <div class="publisher-backup-actions">
-                        <button type="button" id="backupDownload">Baixar backup (.json)</button>
-                        <label for="backupFile">Restaurar de backup</label>
-                        <input type="file" id="backupFile" accept="application/json">
-                    </div>
-                    <p class="publisher-status" id="backupStatus" role="status" aria-live="polite"></p>
-                </section>
-            </section>
+        <div class="hero__stats">
+          <div class="stat">
+            <span class="stat__num">153</span>
+            <span class="stat__label" data-i18n="hero.stat_days">dias de diálogo</span>
+          </div>
+          <div class="stat">
+            <span class="stat__num">2</span>
+            <span class="stat__label" data-i18n="hero.stat_voices">vozes em conversa</span>
+          </div>
+          <div class="stat">
+            <span class="stat__num">1</span>
+            <span class="stat__label" data-i18n="hero.stat_exp">experiência compartilhada</span>
+          </div>
         </div>
-    </div>
-
-    <header class="topbar">
-        <div class="logo">
-            <button
-                id="sidebarToggle"
-                class="sidebar-toggle"
-                type="button"
-                aria-label="Abrir menu lateral"
-                aria-controls="mainSidebar"
-                aria-expanded="false"
-            >
-                <span class="material-symbols-outlined" id="sidebarToggleIcon">menu</span>
-                <span class="sidebar-toggle__label" id="sidebarToggleLabel">Abrir menu</span>
-            </button>
+      </div>
+      <div class="hero__visual">
+        <div class="cover-frame">
+          <img src="sinapse-capa.jpg" alt="Capa do livro Sinapses do Vento" class="cover-frame__img">
         </div>
-        <div class="site-title" aria-hidden="false">Sinapses do Vento
-            <div class="site-subtitle">UMA ABORDAGEM DIALÓGICA PARA A FINITUDE</div>
-        </div>
-        <div class="user-info" id="userInfo" aria-live="polite">
-            <button type="button" class="admin-entry" id="enterButtonStatic">Entrar</button>
-        </div>
-    </header>
-
-    <!-- Menu lateral esquerdo -->
-    <aside class="sidebar" id="mainSidebar" aria-label="Menu lateral">
-        <nav class="side-nav">
-            <ul>
-                <li><a href="/">Início</a></li>
-                <li><button type="button" id="methodButton">O Método</button></li>
-                <li><button type="button" id="blogDiaryButton">Blog/Diário</button></li>
-                <li><a href="livro-capa-dura.html">Livro (Capa Dura)</a></li>
-                <li><a href="https://sinapses-v.netlify.app" target="_blank" rel="noopener noreferrer">Livro Digital</a></li>
-                <li><button type="button" id="coursesButton">Cursos</button></li>
-                <li><button type="button" id="palestrasButton">Palestra</button></li>
-                <li><button type="button" id="publisherEntry" class="admin-entry" title="Administração">Administração</button></li>
-            </ul>
-        </nav>
-    </aside>
-
-    <div class="sidebar-overlay" id="sidebarOverlay" aria-hidden="true"></div>
-
-    <div class="method-modal" id="methodModal" aria-hidden="true">
-        <div class="method-modal__backdrop" data-method-close></div>
-        <section class="method-modal__panel" role="dialog" aria-modal="true" aria-labelledby="methodModalTitle">
-            <button type="button" class="method-modal__close" data-method-close aria-label="Fechar método">&times;</button>
-            <header class="method-modal__header">
-                <p class="method-modal__eyebrow">O MÉTODO SINÁPTICO</p>
-                <h2 id="methodModalTitle">Uma abordagem dialógica para a finitude</h2>
-                <p class="method-modal__lead">
-                    O método parte da ideia de que a crise biológica precisa ser acompanhada por
-                    sustentação simbólica, afetiva e filosófica. Em vez de reduzir a experiência à
-                    doença, ele organiza uma forma de atravessar o fim com vínculo, verdade, beleza e memória.
-                </p>
-            </header>
-
-            <div class="method-modal__grid">
-                <article class="method-card">
-                    <h3>1. Refúgio dialógico</h3>
-                    <p>
-                        Antes da crise, constrói-se um espaço seguro de interlocução. A conversa pode
-                        parecer sem finalidade prática, mas fortalece o vínculo, sustenta a honestidade
-                        radical e mantém a presença mesmo à distância.
-                    </p>
-                </article>
-
-                <article class="method-card">
-                    <h3>2. Desmoralização da doença</h3>
-                    <p>
-                        A enfermidade não é tratada como culpa, castigo ou expiação. O método propõe um
-                        olhar fenomenológico: observar o caos biológico com interesse, retirando o peso moral
-                        e substituindo o medo por investigação.
-                    </p>
-                </article>
-
-                <article class="method-card">
-                    <h3>3. Estetização da existência</h3>
-                    <p>
-                        A beleza não funciona como fuga, mas como suporte vital. Música, literatura, arte,
-                        natureza e os pequenos rituais cotidianos ajudam a dar forma à dor e a preservar a
-                        pulsação de vida.
-                    </p>
-                </article>
-
-                <article class="method-card">
-                    <h3>4. Reengenharia do tempo</h3>
-                    <p>
-                        O método desloca o foco da escassez para a densidade do tempo vivido. Um dia pode
-                        conter uma eternidade quando se habita o presente com atenção, memória e presença.
-                    </p>
-                </article>
-
-                <article class="method-card">
-                    <h3>5. Integração da finitude</h3>
-                    <p>
-                        O objetivo final não é vencer a morte, mas preservar a integridade do ser. A morte é
-                        recolocada no ciclo da vida, enquanto autobiografia, legado e rendição ativa costuram
-                        a continuidade dos afetos e das obras.
-                    </p>
-                </article>
-            </div>
-
-            <footer class="method-modal__footer">
-                <p>
-                    Enfrentar o fim não é uma batalha contra a morte, mas uma afirmação radical da vida.
-                </p>
-            </footer>
-        </section>
+      </div>
     </div>
+  </section>
 
-    <div class="method-modal" id="blogDiaryModal" aria-hidden="true">
-        <div class="method-modal__backdrop" data-blog-close></div>
-        <section class="method-modal__panel" role="dialog" aria-modal="true" aria-labelledby="blogDiaryModalTitle">
-            <button type="button" class="method-modal__close" data-blog-close aria-label="Fechar blog e diário">&times;</button>
-            <header class="method-modal__header">
-                <p class="method-modal__eyebrow">BLOG / DIÁRIO</p>
-                <h2 id="blogDiaryModalTitle">Uma conversa viva entre Angélica, Paulo e a comunidade</h2>
-                <p class="method-modal__lead">
-                    Nesta plataforma, Angélica e Paulo continuam conversando todos os dias. Eles compartilham
-                    ideias, perspectivas, pequenos textos, notícias, reflexões e fragmentos de pensamento que
-                    acompanham o ritmo da vida em movimento.
-                </p>
-            </header>
-
-            <div class="method-modal__grid">
-                <article class="method-card">
-                    <h3>Conversas contínuas</h3>
-                    <p>
-                        O blog funciona como um diário compartilhado: cada publicação é uma extensão da conversa
-                        entre os dois autores, mas também um convite para que novas vozes entrem no diálogo.
-                    </p>
-                </article>
-
-                <article class="method-card">
-                    <h3>Textos, notícias e ideias</h3>
-                    <p>
-                        Aqui aparecem pensamentos curtos, notas de leitura, pequenos ensaios, relatos de
-                        cotidiano e notícias que fazem sentido para a comunidade filosófica e afetiva do projeto.
-                    </p>
-                </article>
-
-                <article class="method-card">
-                    <h3>Participação da comunidade</h3>
-                    <p>
-                        Os usuários podem se inscrever na comunidade, registrar seus dados e passar a
-                        participar da conversa com comentários, perguntas, respostas e curadorias de sentido.
-                    </p>
-                </article>
-
-                <article class="method-card">
-                    <h3>Um espaço de vínculo</h3>
-                    <p>
-                        A proposta é manter uma presença diária, atenta e humana. Não se trata apenas de ler,
-                        mas de entrar em relação com o pensamento que se constrói aqui, junto com os autores.
-                    </p>
-                </article>
-            </div>
-
-            <footer class="method-modal__footer method-modal__footer--actions">
-                <p>
-                    Para participar, inscreva-se na comunidade e entre na conversa em andamento.
-                </p>
-                <button type="button" id="blogDiaryJoinButton" class="method-modal__action">
-                    Inscrever-se na comunidade
-                </button>
-            </footer>
-        </section>
+  <!-- ==================== SINOPSIS ==================== -->
+  <section class="band band--orange" id="sobre">
+    <div class="band__inner reveal">
+      <p class="band__eyebrow" data-i18n="synopsis.eyebrow">SINOPSE</p>
+      <h2 class="band__title" data-i18n="synopsis.title">Um livro que transforma uma conversa urgente em reflexão filosófica.</h2>
+      <p class="band__text" data-i18n="synopsis.text">
+        A obra nasce no ponto mais delicado: um diagnóstico de sarcoma e o itinerário
+        de cirurgias, cuidado, espera e transformação. Desde aí, a escrita recolhe
+        o cotidiano e o converte em pensamento vivo.
+      </p>
     </div>
+  </section>
 
-    <div class="method-modal" id="coursesModal" aria-hidden="true">
-        <div class="method-modal__backdrop" data-courses-close></div>
-        <section class="method-modal__panel" role="dialog" aria-modal="true" aria-labelledby="coursesModalTitle">
-            <button type="button" class="method-modal__close" data-courses-close aria-label="Fechar cursos">&times;</button>
-            <header class="method-modal__header">
-                <p class="method-modal__eyebrow">EDUCAÇÃO E EXPERIÊNCIA (EDU &amp; EVENTS)</p>
-                <h2 id="coursesModalTitle">Produtos para aprofundar e aplicar o método</h2>
-                <p class="method-modal__lead">
-                    Produtos para quem deseja aprofundar e aplicar o Método Sináptico em formatos educativos,
-                    vivenciais e de acompanhamento.
-                </p>
-            </header>
+  <!-- ==================== CONTEÚDO ==================== -->
+  <section class="content-grid reveal">
+    <article class="panel panel--light">
+      <p class="panel__eyebrow" data-i18n="content.find_eyebrow">O QUE VOCÊ VAI ENCONTRAR</p>
+      <h2 class="panel__title" data-i18n="content.find_title">Diálogo, corpo, amizade e finitude</h2>
+      <p class="panel__text" data-i18n="content.find_text">
+        O livro transita por perguntas sobre amor, alteridade, arte, silêncio,
+        vulnerabilidade, inteligência, dor, sentido e reflexão. Não explica a
+        vida de fora: a pensa enquanto acontece.
+      </p>
+    </article>
+    <article class="panel panel--accent">
+      <p class="panel__eyebrow" data-i18n="content.tone_eyebrow">TOM</p>
+      <h2 class="panel__title" data-i18n="content.tone_title">Íntimo, sóbrio e radicalmente humano</h2>
+      <p class="panel__text" data-i18n="content.tone_text">
+        A linguagem mescla a proximidade das mensagens digitais com a densidade
+        de um ensaio poético-filosófico. A forma conserva a espontaneidade do
+        WhatsApp, mas com uma profundidade que toca a sensibilidade do leitor.
+      </p>
+    </article>
+  </section>
 
-            <div class="method-modal__grid method-modal__grid--single">
-                <article class="method-card method-card--featured">
-                    <h3>Curso Online: A Arte de Enfrentar a Finitude</h3>
-                    <p>
-                        Uma formação pensada para pessoas que atravessam situações de crise e também para quem
-                        acompanha esse processo de perto. O curso combina fundamentos filosóficos, sustentação
-                        simbólica e ferramentas de aplicação cotidiana.
-                    </p>
-                </article>
-
-                <article class="method-card">
-                    <h3>Formato</h3>
-                    <p>
-                        Aulas gravadas + encontros ao vivo, com linguagem acessível, conteúdo profundo e espaço
-                        para reflexão, escuta e integração das experiências.
-                    </p>
-                </article>
-
-                <article class="method-card">
-                    <h3>Módulos</h3>
-                    <p>
-                        Os encontros são organizados a partir dos 5 pilares do Método Sináptico:
-                        Refúgio, Desmoralização da Doença, Estética, Tempo e Integração.
-                    </p>
-                </article>
-
-                <article class="method-card">
-                    <h3>Público-alvo</h3>
-                    <p>
-                        Pessoas em situações de crise, familiares, profissionais de saúde que buscam
-                        humanização e psicólogos interessados em uma abordagem sensível e reflexiva.
-                    </p>
-                </article>
-
-                <article class="method-card">
-                    <h3>Plataforma</h3>
-                    <p>
-                        O curso pode ser hospedado em Hotmart ou Teachable, conforme a estrutura escolhida para
-                        a oferta e a experiência de acompanhamento.
-                    </p>
-                </article>
-            </div>
-
-            <section class="course-interest">
-                <div class="course-interest__copy">
-                    <p class="method-modal__eyebrow">Ficha de interesse</p>
-                    <h3>Quero ser avisado quando o curso estiver disponível</h3>
-                    <p>
-                        Preencha seus dados básicos para entrar na lista de interesse. Assim conseguimos organizar
-                        a comunidade e avisar sobre a abertura das inscrições.
-                    </p>
-                </div>
-
-                <form id="courseInterestForm" class="course-interest__form">
-                    <label for="courseInterestName">Nome</label>
-                    <input type="text" id="courseInterestName" placeholder="Seu nome completo" required>
-
-                    <label for="courseInterestEmail">Email</label>
-                    <input type="email" id="courseInterestEmail" placeholder="seuemail@exemplo.com" required>
-
-                    <label for="courseInterestCity">Cidade</label>
-                    <input type="text" id="courseInterestCity" placeholder="Sua cidade" required>
-
-                    <button type="submit" class="method-modal__action">Manifestar interesse</button>
-                    <p class="course-interest__status" id="courseInterestStatus" role="status" aria-live="polite"></p>
-                </form>
-            </section>
-        </section>
+  <!-- ==================== CITAÇÃO ==================== -->
+  <section class="quote-band reveal">
+    <div class="quote-band__inner">
+      <p class="quote-band__quote" data-i18n="quote.text">
+        "Frente a uma doença grave, a pessoa deve ser o sujeito de sua cura e
+        sua sanidade, em situação de diálogo com quem sabe acompanhar essa crise."
+      </p>
+      <p class="quote-band__source" data-i18n="quote.source">— Ideia central do livro</p>
     </div>
+  </section>
 
-    <div class="method-modal" id="palestrasModal" aria-hidden="true">
-        <div class="method-modal__backdrop" data-palestras-close></div>
-        <section class="method-modal__panel" role="dialog" aria-modal="true" aria-labelledby="palestrasModalTitle">
-            <button type="button" class="method-modal__close" data-palestras-close aria-label="Fechar palestras">&times;</button>
-            <header class="method-modal__header">
-                <p class="method-modal__eyebrow">CICLO DE PALESTRAS E WORKSHOPS</p>
-                <h2 id="palestrasModalTitle">Encontros para pensar, ler e performar a experiência</h2>
-                <p class="method-modal__lead">
-                    O ciclo de palestras foi pensado como uma extensão viva do livro e do método: um espaço de
-                    fala, escuta e presença em que a reflexão filosófica encontra o corpo, a voz e a cena.
-                </p>
-            </header>
+  <!-- ==================== DETALHES + FICHA TÉCNICA ==================== -->
+  <section class="details reveal">
+    <article class="details__card details__card--image">
+      <img src="sinapse.jpeg" alt="Página interior do livro" class="details__image">
+    </article>
+    <article class="details__card details__card--text">
+      <p class="panel__eyebrow" data-i18n="techsheet.eyebrow">FICHA TÉCNICA</p>
+      <h2 class="panel__title" data-i18n="techsheet.title">Uma obra escrita a duas vozes</h2>
+      <ul class="facts">
+        <li><strong data-i18n="techsheet.authors_label">Autores:</strong> <span data-i18n="techsheet.authors">Angélica Sátiro e Paulo Volker</span></li>
+        <li><strong data-i18n="techsheet.lang_label">Idioma:</strong> <span data-i18n="techsheet.lang_value">Português</span></li>
+        <li><strong data-i18n="techsheet.publisher_label">Editora:</strong> MDH</li>
+        <li><strong data-i18n="techsheet.location_label">Local:</strong> <span data-i18n="techsheet.location_value">Brasília — Barcelona</span></li>
+        <li><strong data-i18n="techsheet.year_label">Ano:</strong> 2026</li>
+        <li><strong data-i18n="techsheet.pages_label">Páginas:</strong> 200</li>
+        <li><strong data-i18n="techsheet.format_label">Formato:</strong> <span data-i18n="techsheet.format_value">Livro de diálogos, reflexão e memória</span></li>
+        <li><strong data-i18n="techsheet.themes_label">Temas:</strong> <span data-i18n="techsheet.themes_value">Filosofia, amizade, corpo, arte, medicina e finitude</span></li>
+      </ul>
+    </article>
+  </section>
 
-            <div class="method-modal__grid">
-                <article class="method-card method-card--featured">
-                    <h3>Temas centrais</h3>
-                    <p>
-                        <strong>Filosofia como Remédio</strong>, <strong>A Escrita de Si</strong> e
-                        <strong>Humanização na Saúde</strong>. Cada encontro pode aprofundar um eixo do projeto,
-                        articulando experiência, linguagem e cuidado.
-                    </p>
-                </article>
+  <!-- ==================== AUTORES ==================== -->
+  <section class="authors reveal" id="autores">
+    <article class="author-card">
+      <p class="author-card__eyebrow">ANGÉLICA SÁTIRO</p>
+      <div class="author-card__photo">
+        <img src="angelica.jpg" alt="Angélica Sátiro">
+      </div>
+      <p class="author-card__text" data-i18n="authors.angelica">
+        Escritora, educadora, consultora e artista collage. Seu trabalho conecta
+        pedagogia ousada, cidadania criativa e filosofia lúdica.
+      </p>
+    </article>
+    <article class="author-card">
+      <p class="author-card__eyebrow">PAULO VOLKER</p>
+      <div class="author-card__photo">
+        <img src="paulo.png" alt="Paulo Volker">
+      </div>
+      <p class="author-card__text" data-i18n="authors.paulo">
+        Filósofo, escritor e consultor em estratégias do conhecimento. Sua voz
+        articula pensamento, análise e sensibilidade para o detalhe humano.
+      </p>
+    </article>
+  </section>
 
-                <article class="method-card">
-                    <h3>Formato</h3>
-                    <p>
-                        As atividades podem acontecer de forma presencial ou híbrida, conforme o espaço,
-                        a agenda e o público convidado.
-                    </p>
-                </article>
-
-                <article class="method-card">
-                    <h3>Diferencial</h3>
-                    <p>
-                        As palestras são performáticas: leitura de trechos do livro, pausas de ressonância e
-                        explanação teórica se entrelaçam para transformar o conteúdo em experiência.
-                    </p>
-                </article>
-
-                <article class="method-card">
-                    <h3>Proposta de encontro</h3>
-                    <p>
-                        Mais do que uma exposição de ideias, cada evento busca criar vínculo com a plateia,
-                        abrindo espaço para conversas posteriores, perguntas e desdobramentos práticos.
-                    </p>
-                </article>
-            </div>
-
-            <footer class="method-modal__footer">
-                <p>
-                    Um ciclo de palestras para aproximar o pensamento da escuta e o livro da presença ao vivo.
-                </p>
-            </footer>
-
-            <section class="course-interest">
-                <div class="course-interest__copy">
-                    <p class="method-modal__eyebrow">Agenda e contato</p>
-                    <h3>Quero levar esta palestra para minha instituição ou evento</h3>
-                    <p>
-                        Preencha seus dados básicos para solicitar agenda, conversar sobre formatos e
-                        receber informações sobre disponibilidade para encontros presenciais ou híbridos.
-                    </p>
-                </div>
-
-                <form id="palestraContactForm" class="course-interest__form">
-                    <label for="palestraContactName">Nome</label>
-                    <input type="text" id="palestraContactName" placeholder="Seu nome completo" required>
-
-                    <label for="palestraContactEmail">Email</label>
-                    <input type="email" id="palestraContactEmail" placeholder="seuemail@exemplo.com" required>
-
-                    <label for="palestraContactCity">Cidade</label>
-                    <input type="text" id="palestraContactCity" placeholder="Sua cidade" required>
-
-                    <button type="submit" class="method-modal__action">Solicitar agenda</button>
-                    <p class="course-interest__status" id="palestraContactStatus" role="status" aria-live="polite"></p>
-                </form>
-            </section>
-        </section>
+  <!-- ==================== CTA FINAL ==================== -->
+  <section class="cta-final" id="comprar">
+    <div class="cta-final__inner reveal">
+      <p class="cta-final__eyebrow" data-i18n="cta.eyebrow">ADQUIRA O LIVRO</p>
+      <h2 class="cta-final__title" data-i18n="cta.title">Leve esta conversa com você</h2>
+      <p class="cta-final__desc" data-i18n="cta.desc">
+        Disponível em formato digital. Clique abaixo para garantir o seu exemplar.
+      </p>
+      <a href="https://pay.hotmart.com/N106672153S" target="_blank" rel="noopener" class="btn btn--primary btn--large" data-i18n="cta.btn">
+        Comprar o ebook
+      </a>
     </div>
+  </section>
 
-    <main class="main-with-sidebar">
-        <section class="community-intro" id="dialogCommunity">
-            <div class="community-intro__card">
-                <h2>Comunidade de Diálogo</h2>
-                <p>Um espaço acolhedor e moderado para perguntas, relatos e reflexões sobre finitude, onde o vínculo, a verdade e a beleza sustentam o pensamento compartilhado.</p>
-                <p>Participe comentando nas publicações ou apenas acompanhe as conversas — a densidade do tempo vivido importa mais do que sua extensão.</p>
-                <a class="community-intro__cta" href="conversas.html">Entrar nas conversas</a>
-            </div>
-        </section>
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="footer">
+    <div class="footer__inner">
+      <p class="footer__copy">© 2026 — Sinapses do Vento</p>
+      <p class="footer__authors">Angélica Sátiro & Paulo Volker</p>
+      <p class="footer__publisher" data-i18n="footer.publisher">Editora MDH</p>
+    </div>
+  </footer>
 
-        <section class="featured-conversation" aria-label="Conversa de abertura">
-            <article class="featured-conversation__item">
-                <div class="author-avatar featured-conversation__avatar">
-                    <img src="angelica.jpg" alt="Foto de Angélica Satiro">
-                </div>
-                <div class="featured-conversation__content">
-                    <p class="featured-conversation__name">Angélica</p>
-                    <p>Bom dia Paulo, ontem fiz uma palestra na Galícia e lembrei de você. Aquela sua questão sobre a paz dos cenários é a soma da paz de cada uma das pessoas que estão nele. Lembra disso?</p>
-                </div>
-            </article>
+  </main>
 
-            <article class="featured-conversation__item">
-                <div class="author-avatar featured-conversation__avatar">
-                    <img src="paulo.png" alt="Foto de Paulo Volker">
-                </div>
-                <div class="featured-conversation__content">
-                    <p class="featured-conversation__name">Paulo</p>
-                    <p>Ei Angélica. Sim, é claro. Uma ideia que temos ainda que explorar. A "paz individual" de um entra em ressonância com a "paz individual" do outro e esse processo tende a se expandir nos ambientes. Falamos disso no "Sinapses do Vento".</p>
-                </div>
-            </article>
-        </section>
-    </main>
-
-    <template id="postTemplate">
-        <article class="post">
-            <header class="post-header">
-                <div class="author-avatar" data-author=""></div>
-                <div>
-                    <h3 class="post-title"></h3>
-                    <span class="post-meta"></span>
-                </div>
-            </header>
-            <div class="post-body"></div>
-            <footer class="post-footer">
-                <button class="like-btn" type="button">
-                    <span class="material-symbols-outlined">favorite</span>
-                    <span class="like-count">0</span>
-                </button>
-                <div class="engagement">
-                    <h4>Participe</h4>
-                    <form class="feedback-form">
-                        <label class="sr-only">Escreva seu comentário ou pergunta</label>
-                        <textarea placeholder="Compartilhe um comentário ou faça uma pergunta" required></textarea>
-                        <div class="feedback-actions">
-                            <label>
-                                <input type="radio" name="feedbackType" value="Comentário" checked>
-                                Comentário
-                            </label>
-                            <label>
-                                <input type="radio" name="feedbackType" value="Pergunta">
-                                Pergunta
-                            </label>
-                            <button type="submit">Enviar</button>
-                        </div>
-                    </form>
-                    <ul class="feedback-list"></ul>
-                </div>
-            </footer>
-        </article>
-    </template>
-
-    <!-- Entrada reservada agora está no header como “Administração” -->
-
-    <script src="config.js?v=20260114"></script>
-    <script src="script.js?v=20260114" defer></script>
+  <script src="sidebar.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
